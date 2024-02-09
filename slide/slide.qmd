@@ -1,0 +1,32 @@
+---
+title: "QML project"
+subtitle: "Hierarchical quantum circuit representations for neural architecture search"
+format:
+  revealjs: 
+    slide-number: true
+    theme: serif
+    footer: "Ludovico Venturi - Università di Firenze"
+    incremental: true  
+    html-math-method: mathjax
+    layout: center
+
+toc: true
+csl: /home/ludovicowan/Dev/dev-tools/csl/nature.csl
+bibliography: ../references.bib
+---
+
+## Barren Plateaus
+
+- random circuits are often proposed as initial guesses for exploring the space of quantum states
+
+- the exponential dimension of Hilbert space and the gradient estimation complexity ... on more than a few qubits
+
+- For a wide class of PQCs, the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov
+
+## QCNNs
+
+
+# References {.unnumbered}
+
+::: {#refs}
+:::

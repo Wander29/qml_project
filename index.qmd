@@ -1,0 +1,25 @@
+# Introduction
+
+## Barren Plateaus
+
+-  where the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes
+
+- Random circuits are often proposed as initial guesses for exploring the space of quantum states
+
+- Due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits
+
+-   For a wide class of PQCs, the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov
+
+### Barren Plateaus on QCNNs
+
+- The variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_. 
+
+- It is guaranteed that randomly initialized QCNNs are trainable, unlike many other QNN architectures.
+
+## QCNNs
+
+Introduced in @Cong2019Dec
+
+## NAS
+
+@elsken2019neural

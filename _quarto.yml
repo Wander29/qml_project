@@ -1,0 +1,32 @@
+project:
+  type: book
+  output-dir: build
+
+book:
+  title: "QML project"
+  author: "Ludovico Venturi"
+  date: "02/08/2024"
+  chapters:
+    - index.qmd
+    - chapters/references.qmd
+
+toc: true
+number-sections: true
+number-depth: 2
+csl: /home/ludovicowan/Dev/dev-tools/csl/nature.csl
+bibliography: references.bib
+
+pdf-engine: tectonic
+format:
+  html:
+    code-fold: false
+    theme: litera
+    code-summary: "Show the code"
+    code-tools: true
+    html-math-method: mathjax
+  pdf:
+    documentclass: report
+    margin-left: 30mm
+    margin-right: 30mm
+    link-citations: true
+
