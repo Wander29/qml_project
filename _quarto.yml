@@ -2,10 +2,14 @@ project:
   type: book
   output-dir: build
 
+lang: it
 book:
   title: "QML project"
-  author: "Ludovico Venturi"
-  date: "02/08/2024"
+  author: 
+    - name: Ludovico Venturi
+      email: ludovico.venturi@edu.unifi.it
+      affiliations: 
+        - name: Università degli studi di Firenze
   chapters:
     - index.qmd
     - chapters/references.qmd
@@ -15,7 +19,7 @@ number-sections: true
 number-depth: 2
 csl: /home/ludovicowan/Dev/dev-tools/csl/nature.csl
 bibliography: references.bib
-
+latex-auto-mk: false
 pdf-engine: tectonic
 format:
   html:
@@ -25,8 +29,17 @@ format:
     code-tools: true
     html-math-method: mathjax
   pdf:
-    documentclass: report
-    margin-left: 30mm
-    margin-right: 30mm
+    documentclass: scrreprt
     link-citations: true
+    geometry:
+      - top=20mm
+      - left=20mm
+    papersize: a4
+    colorlinks: true
+    # linestretch: 1.1
+    fontsize: 13pt
+    include-in-header:
+      - "utils/in-header.tex"
+    include-before-body:
+      - "utils/before-body.tex"
 

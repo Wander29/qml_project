@@ -1,0 +1,4 @@
+\newcommand{\indep}{\perp \!\!\! \perp}
+\newcommand{\notindep}{\not\!\perp\!\!\!\perp}
+
+\usepackage{amsmath}
