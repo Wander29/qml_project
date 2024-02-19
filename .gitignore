@@ -1,3 +1,4 @@
 .quarto/
 /.quarto/
-build/
+build/*
+!./build/*.pdf
