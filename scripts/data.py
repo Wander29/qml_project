@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline
 import pandas as pd
 from pennylane import numpy as np
 
-PATH_DATA = "/home/ludovicowan/Files/sync/uni-sync/Unifi_corsi/QML/progetto_petruccione_audio/quarto/data/GTZan_dataset/features_30_sec.csv"
+PATH_DATA = "/home/ludovicowan/Files/datasets/GTZan_dataset/features_30_sec.csv"
 Samples = namedtuple("samples", ["x_train", "x_test", "y_train", "y_test"])
 
 def data_load_and_split(genres):
