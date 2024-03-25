@@ -21,10 +21,10 @@ pipeline = Pipeline(steps=[
 
 #--- Grid Search for hyperparameters
 grid_params = { 'model__stride_c':list(range(2,4)),
-                'model__filter_p':["!*"]
+                'model__filter_p':["!*", "*!"]
               }
 
-grid = GridSearchCV(pipeline, grid_params, cv=5, n_jobs=8, verbose=True, refit=True)
+grid = GridSearchCV(pipeline, grid_params, cv=3, n_jobs=8, verbose=True, refit=True)
 
 grid.fit(samples.x_train, samples.y_train.values)
 

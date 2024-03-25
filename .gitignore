@@ -7,5 +7,6 @@ build/*
 data/
 other_scripts/
 .jupyter_cache/
-
+scripts/test.ipynb
+scripts/results
 
