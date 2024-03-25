@@ -1,0 +1,51 @@
+# Introduction
+
+In this project work I tried to replicate some of the results of the paper "Hierarchical quantum circuit representations for neural architecture search" @lourens2023hierarchical. 
+
+In this paper the authors propose a framework named HierarQcal for representing Quantum Convolutional Neural Networks (QCNN) architectures using techniques from Neural Architectural Search (NAS). This framework enables search space design and architecture search, the former being the most challenging point in applying NAS to QCNN. 
+
+In this work we generate the family of QCNN architectures resembling reverse binary trees and we evaluate this family on the GTZAN music genre classification dataset showing that it is possible to improve model performance without increasing complexity.
+
+
+# Background
+
+QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalisation capabilities and absence of _barren plateaus_.
+
+A _barren plateau_ happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes.
+For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hillbert space and the gradient estimation complexity on more than a few qubits.
+
+It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov.
+For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_.
+
+Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design. 
+
+The next step is learning network architecture, which NAS aims to achieve @elsken2019neural. NAS consists of 3 main components:
+
+- search space
+- search strategy
+- performance estimation strategy
+
+The _search space_ defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.
+
+
+## HierarQcal
+
+HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. 
+It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.
+
+The package includes primitives such as _convolutions, pooling_ and _dense layers_ that can be stacked together hierarchically to form complex QCNN circuit architectures.
+
+# Music genre classification
+
+I use the dataset GTZAN from Kaggle
+
+
+```{python}
+import time
+
+time.sleep(2.5)
+print("daiea")
+```
+
+aa
+b

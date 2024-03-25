@@ -2,3 +2,10 @@
 /.quarto/
 build/*
 !./build/*.pdf
+*pycache*/
+*__pycache__*
+data/
+other_scripts/
+.jupyter_cache/
+
+

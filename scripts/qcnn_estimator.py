@@ -4,11 +4,11 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 import single_model_train
 
 class QCNNEstimator(BaseEstimator) :
-  def __init__(self, stride_c=1, filter_p='*!'):
+  def __init__(self, stride_c=1, filter_p='!*'):
     self.stride_c = stride_c
     self.filter_p = filter_p
     self.hierq = single_model_train.qcnn_motif(stride_c, filter_p)
-    self.symbols = torch.rand(hierq.n_symbols, requires_grad=True)
+    self.symbols = []
 
   def fit(self, X, y, **kwargs):
     """Implementation of a fitting function.

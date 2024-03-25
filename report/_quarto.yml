@@ -28,6 +28,8 @@ format:
     code-summary: "Show the code"
     code-tools: true
     html-math-method: mathjax
+    execute:
+      cache: true
   pdf:
     documentclass: scrreprt
     link-citations: true
@@ -38,6 +40,8 @@ format:
     colorlinks: true
     # linestretch: 1.1
     fontsize: 13pt
+    execute:
+      cache: true
     include-in-header:
       - "utils/in-header.tex"
     include-before-body:

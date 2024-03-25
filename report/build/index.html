@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it" xml:lang="it"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.551">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Ludovico Venturi">
-<meta name="dcterms.date" content="2024-02-08">
 
 <title>QML project</title>
 <style>
@@ -110,17 +109,17 @@ div.csl-indent {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "Nessun risultato",
+    "search-matching-documents-text": "documenti trovati",
+    "search-copy-link-title": "Copiare il link nella ricerca",
+    "search-hide-matches-text": "Nascondere i risultati aggiuntivi",
+    "search-more-match-text": "ci sono altri risultati in questo documento",
+    "search-more-matches-text": "ulteriori risultati in questo documento",
+    "search-clear-button-title": "Pulire",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancellare",
+    "search-submit-button-title": "Inviare",
+    "search-label": "Ricerca"
   }
 }</script>
 
@@ -133,11 +132,11 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Attiva/disattiva la barra laterale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Attiva/disattiva la barra laterale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
@@ -156,7 +155,7 @@ div.csl-indent {
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
+        <div id="quarto-search" class="" title="Ricerca"></div>
         </div>
         </div>
     <div class="sidebar-menu-container"> 
@@ -180,18 +179,15 @@ div.csl-indent {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">Indice</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="header-section-number">2</span> Background</a>
   <ul class="collapse">
-  <li><a href="#barren-plateaus" id="toc-barren-plateaus" class="nav-link" data-scroll-target="#barren-plateaus"><span class="header-section-number">1.1</span> Barren Plateaus</a>
-  <ul class="collapse">
-  <li><a href="#barren-plateaus-on-qcnns" id="toc-barren-plateaus-on-qcnns" class="nav-link" data-scroll-target="#barren-plateaus-on-qcnns">Barren Plateaus on QCNNs</a></li>
+  <li><a href="#hierarqcal" id="toc-hierarqcal" class="nav-link" data-scroll-target="#hierarqcal"><span class="header-section-number">2.1</span> HierarQcal</a></li>
   </ul></li>
-  <li><a href="#qcnns" id="toc-qcnns" class="nav-link" data-scroll-target="#qcnns"><span class="header-section-number">1.2</span> QCNNs</a></li>
-  <li><a href="#nas" id="toc-nas" class="nav-link" data-scroll-target="#nas"><span class="header-section-number">1.3</span> NAS</a></li>
-  </ul></li>
+  <li><a href="#music-genre-classification" id="toc-music-genre-classification" class="nav-link" data-scroll-target="#music-genre-classification"><span class="header-section-number">3</span> Music genre classification</a></li>
   </ul>
 </nav>
     </div>
@@ -200,26 +196,27 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">QML project</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">QML project</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Codice</button></div></div>
 </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Autore/Autrice</div>
+  <div class="quarto-title-meta-heading">Affiliazione</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Ludovico Venturi <a href="mailto:ludovico.venturi@edu.unifi.it" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Università degli studi di Firenze
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Ludovico Venturi </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">February 8, 2024</p>
-    </div>
-  </div>
+      
   
     
   </div>
@@ -231,48 +228,63 @@ div.csl-indent {
 
 <section id="introduction" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
-<section id="barren-plateaus" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="barren-plateaus"><span class="header-section-number">1.1</span> Barren Plateaus</h2>
+<p>In this project work I tried to replicate some of the results of the paper “Hierarchical quantum circuit representations for neural architecture search”<span class="citation" data-cites="lourens2023hierarchical"><sup><a href="chapters/references.html#ref-lourens2023hierarchical" role="doc-biblioref">1</a></sup></span>.</p>
+<p>In this paper the authors propose a framework named HierarQcal for representing Quantum Convolutional Neural Networks (QCNN) architectures using techniques from Neural Architectural Search (NAS). This framework enables search space design and architecture search, the former being the most challenging point in applying NAS to QCNN.</p>
+<p>In this work we generate the family of QCNN architectures resembling reverse binary trees and we evaluate this family on the GTZAN music genre classification dataset showing that it is possible to improve model performance without increasing complexity.</p>
+</section>
+<section id="background" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Background</h1>
+<p>QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalisation capabilities and absence of <em>barren plateaus</em>.</p>
+<p>A <em>barren plateau</em> happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes. For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hillbert space and the gradient estimation complexity on more than a few qubits.</p>
+<p>It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits<span class="citation" data-cites="McClean2018Nov"><sup><a href="chapters/references.html#ref-McClean2018Nov" role="doc-biblioref">2</a></sup></span>. For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially<span class="citation" data-cites="Pesah2021Oct"><sup><a href="chapters/references.html#ref-Pesah2021Oct" role="doc-biblioref">3</a></sup></span> so QCNNs do not exhibit <em>barren plateaus</em>.</p>
+<p>Convolutional Neural Networks (CNN) are successful because they don’t need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design.</p>
+<p>The next step is learning network architecture, which NAS aims to achieve<span class="citation" data-cites="elsken2019neural"><sup><a href="chapters/references.html#ref-elsken2019neural" role="doc-biblioref">4</a></sup></span>. NAS consists of 3 main components:</p>
 <ul>
-<li><p>where the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes</p></li>
-<li><p>Random circuits are often proposed as initial guesses for exploring the space of quantum states</p></li>
-<li><p>Due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits</p></li>
-<li><p>For a wide class of PQCs, the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits<span class="citation" data-cites="McClean2018Nov"><sup><a href="chapters/references.html#ref-McClean2018Nov" role="doc-biblioref">1</a></sup></span></p></li>
+<li>search space</li>
+<li>search strategy</li>
+<li>performance estimation strategy</li>
 </ul>
-<section id="barren-plateaus-on-qcnns" class="level3">
-<h3 class="anchored" data-anchor-id="barren-plateaus-on-qcnns">Barren Plateaus on QCNNs</h3>
-<ul>
-<li><p>The variance of the gradient vanishes no faster than polynomially<span class="citation" data-cites="Pesah2021Oct"><sup><a href="chapters/references.html#ref-Pesah2021Oct" role="doc-biblioref">2</a></sup></span> so QCNNs do not exhibit <em>barren plateaus</em>.</p></li>
-<li><p>It is guaranteed that randomly initialized QCNNs are trainable, unlike many other QNN architectures.</p></li>
-</ul>
+<p>The <em>search space</em> defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.</p>
+<section id="hierarqcal" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="hierarqcal"><span class="header-section-number">2.1</span> HierarQcal</h2>
+<p>HierarQcal is an open-source python package<span class="citation" data-cites="github_hierarqcal"><sup><a href="chapters/references.html#ref-github_hierarqcal" role="doc-biblioref">5</a></sup></span> that simplifies the process of creating general QCNN by enabling an hierarchical design process. It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.</p>
+<p>The package includes primitives such as <em>convolutions, pooling</em> and <em>dense layers</em> that can be stacked together hierarchically to form complex QCNN circuit architectures.</p>
 </section>
 </section>
-<section id="qcnns" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="qcnns"><span class="header-section-number">1.2</span> QCNNs</h2>
-<p>Introduced in<span class="citation" data-cites="Cong2019Dec"><sup><a href="chapters/references.html#ref-Cong2019Dec" role="doc-biblioref">3</a></sup></span></p>
-</section>
-<section id="nas" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="nas"><span class="header-section-number">1.3</span> NAS</h2>
-<p><span class="citation" data-cites="elsken2019neural"><sup><a href="chapters/references.html#ref-elsken2019neural" role="doc-biblioref">4</a></sup></span></p>
+<section id="music-genre-classification" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Music genre classification</h1>
+<p>I use the dataset GTZAN from Kaggle</p>
+<div id="868bec96" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>time.sleep(<span class="fl">2.5</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"daiea"</span>)</span></code><button title="Copia negli appunti" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>daiea</code></pre>
+</div>
+</div>
+<p>aa b</p>
 
 
 <!-- -->
 
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-lourens2023hierarchical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Lourens, M., Sinayskiy, I., Park, D. K., Blank, C. &amp; Petruccione, F. Hierarchical quantum circuit representations for neural architecture search. <em>npj Quantum Information</em> <strong>9</strong>, 79 (2023).</div>
+</div>
 <div id="ref-McClean2018Nov" class="csl-entry" role="listitem">
-<div class="csl-left-margin">1. </div><div class="csl-right-inline">McClean, J. R., Boixo, S., Smelyanskiy, V. N., Babbush, R. &amp; Neven, H. <a href="https://doi.org/10.1038/s41467-018-07090-4"><span class="nocase">Barren plateaus in quantum neural network training landscapes</span></a>. <em>Nat. Commun.</em> <strong>9</strong>, 1–6 (2018).</div>
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">McClean, J. R., Boixo, S., Smelyanskiy, V. N., Babbush, R. &amp; Neven, H. <a href="https://doi.org/10.1038/s41467-018-07090-4"><span>Barren plateaus in quantum neural network training landscapes</span></a>. <em>Nat. Commun.</em> <strong>9</strong>, 1–6 (2018).</div>
 </div>
 <div id="ref-Pesah2021Oct" class="csl-entry" role="listitem">
-<div class="csl-left-margin">2. </div><div class="csl-right-inline">Pesah, A. <em>et al.</em> <a href="https://doi.org/10.1103/PhysRevX.11.041011"><span class="nocase">Absence of Barren Plateaus in Quantum Convolutional Neural Networks</span></a>. <em>Phys. Rev. X</em> <strong>11</strong>, 041011 (2021).</div>
-</div>
-<div id="ref-Cong2019Dec" class="csl-entry" role="listitem">
-<div class="csl-left-margin">3. </div><div class="csl-right-inline">Cong, I., Choi, S. &amp; Lukin, M. D. <a href="https://doi.org/10.1038/s41567-019-0648-8"><span class="nocase">Quantum convolutional neural networks</span></a>. <em>Nat. Phys.</em> <strong>15</strong>, 1273–1278 (2019).</div>
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Pesah, A. <em>et al.</em> <a href="https://doi.org/10.1103/PhysRevX.11.041011"><span>Absence of Barren Plateaus in Quantum Convolutional Neural Networks</span></a>. <em>Phys. Rev. X</em> <strong>11</strong>, 041011 (2021).</div>
 </div>
 <div id="ref-elsken2019neural" class="csl-entry" role="listitem">
 <div class="csl-left-margin">4. </div><div class="csl-right-inline">Elsken, T., Metzen, J. H. &amp; Hutter, F. Neural architecture search: A survey. <em>The Journal of Machine Learning Research</em> <strong>20</strong>, 1997–2017 (2019).</div>
 </div>
+<div id="ref-github_hierarqcal" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">matt-lourens. <a href="https://github.com/matt-lourens/hierarqcal?tab=readme-ov-file"><span>hierarqcal</span></a>. <em>GitHub</em> (2024).</div>
 </div>
-</section>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -330,12 +342,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiato!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Copiato!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
@@ -406,6 +418,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   if (showAllCode) {
     showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -440,7 +470,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
@@ -722,32 +756,59 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Barren Plateaus</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>where the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Random circuits are often proposed as initial guesses for exploring the space of quantum states</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>For a wide class of PQCs, the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">### Barren Plateaus on QCNNs</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_. </span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>It is guaranteed that randomly initialized QCNNs are trainable, unlike many other QNN architectures.</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## QCNNs</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>Introduced in @Cong2019Dec</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## NAS</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>@elsken2019neural</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Eseguire il codice</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>In this project work I tried to replicate some of the results of the paper "Hierarchical quantum circuit representations for neural architecture search" @lourens2023hierarchical. </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>In this paper the authors propose a framework named HierarQcal for representing Quantum Convolutional Neural Networks (QCNN) architectures using techniques from Neural Architectural Search (NAS). This framework enables search space design and architecture search, the former being the most challenging point in applying NAS to QCNN. </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>In this work we generate the family of QCNN architectures resembling reverse binary trees and we evaluate this family on the GTZAN music genre classification dataset showing that it is possible to improve model performance without increasing complexity.</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu"># Background</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalisation capabilities and absence of _barren plateaus_.</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>A _barren plateau_ happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes.</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hillbert space and the gradient estimation complexity on more than a few qubits.</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov.</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_.</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design. </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>The next step is learning network architecture, which NAS aims to achieve @elsken2019neural. NAS consists of 3 main components:</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>search space</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>search strategy</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>performance estimation strategy</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>The _search space_ defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## HierarQcal</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>The package includes primitives such as _convolutions, pooling_ and _dense layers_ that can be stacked together hierarchically to form complex QCNN circuit architectures.</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu"># Music genre classification</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>I use the dataset GTZAN from Kaggle</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>time.sleep(<span class="fl">2.5</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"daiea"</span>)</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>aa</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>b</span>
+</code><button title="Copia negli appunti" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

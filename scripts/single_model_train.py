@@ -65,15 +65,16 @@ def net(motif, symbols, x):
 def objective_function(y_hat, y):
     loss = nn.BCELoss()
     # loss = nn.MSELoss()
+    assert(len(y_hat) == len(y))
     # index 1 corresponds to predictions for being in class 1
-    loss = loss(y_hat[:, 1], torch.tensor(y.values, dtype=torch.double))
+    loss = loss(y_hat[:, 1], torch.tensor(y, dtype=torch.double))
     return loss
 
 def accuracy(y_hat, y_test):
     y_hat = torch.argmax(y_hat, axis=1).detach().numpy()
     assert(len(y_hat) == len(y_test))
     accuracy = sum(
-            [y_hat[k] == y_test.values[k] for k in range(len(y_hat))]
+            [y_hat[k] == y_test[k] for k in range(len(y_hat))]
         ) / len(y_hat)
 
     return accuracy
