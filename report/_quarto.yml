@@ -5,13 +5,15 @@ project:
 lang: en
 book:
   title: "QML project"
-  author: 
+  author:
     - name: Ludovico Venturi
       email: ludovico.venturi@edu.unifi.it
       affiliations: 
         - name: Università degli studi di Firenze
   chapters:
     - index.qmd
+    - chapters/background.qmd
+    - chapters/model.qmd
     - chapters/references.qmd
 
 toc: true
