@@ -37,8 +37,12 @@ def get_circuit(hierq, x=None):
 
 def train(x, y, motif, N=100, lr=0.1, verbose=True):
     n_symbols = motif.n_symbols
+    torch.manual_seed(111)
+    np.random.seed(111)
     if n_symbols > 0:
         symbols = torch.rand(n_symbols, requires_grad=True)
+        if verbose:
+            print(f"Initial symbols: {symbols}")
         opt = torch.optim.Adam([symbols], lr=lr)
         for it in range(N):
             opt.zero_grad() # reset gradients
@@ -155,18 +159,23 @@ def ansatz_pool_2(bits, symbols=None):
     qml.CNOT(wires=[bits[0], bits[1]])
 U_ansatz_pool_2 = Qunitary(ansatz_pool_2, n_symbols=0, arity=2)
 
-def qcnn_motif(conv_stride=1, pool_filter="!*"):
+
+##############################################################################
+### MOTIF BUILDER
+##############################################################################
+
+def qcnn_motif(ansatz_c=U_ansatz_conv_a, conv_stride=1, conv_step=1, conv_offset=0, share_weights=True, ansatz_p=U_ansatz_pool_1, pool_filter="!*"):
     qcnn = (
         Qinit(8)
         + (
             Qcycle(
                 stride=conv_stride,
-                step=1,
-                offset=0,
-                mapping=U_ansatz_conv_g,
-                share_weights=True,
+                step=conv_step,
+                offset=conv_offset,
+                mapping=ansatz_c,
+                share_weights=share_weights,
             )
-            + Qmask(pool_filter, mapping=U_ansatz_pool_2)
+            + Qmask(pool_filter, mapping=ansatz_p)
         )
         * 3
     )
