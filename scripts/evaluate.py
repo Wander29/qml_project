@@ -2,7 +2,7 @@ import single_model_train
 import data
 from single_model_train import U_ansatz_conv_a
 
-qcnn = single_model_train.qcnn_motif(U_ansatz_conv_a, 4, "!*")
+qcnn = single_model_train.qcnn_motif(ansatz_c=U_ansatz_conv_a, conv_stride=7, conv_step=1, conv_offset=0, pool_filter="!*!", pool_stride=3, share_weights=False)
 samples_preprocessed = data.data_load_and_process(["rock", "country"])
 
 symbols, loss = single_model_train.train(samples_preprocessed.x_train, samples_preprocessed.y_train.values, qcnn)

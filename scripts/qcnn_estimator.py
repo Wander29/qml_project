@@ -4,7 +4,7 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from single_model_train import (U_ansatz_conv_a, U_ansatz_pool_1, qcnn_motif, train, net, accuracy)
 
 class QCNNEstimator(BaseEstimator) :
-  def __init__(self, ansatz_c=U_ansatz_conv_a, stride_c=1, step_c=1, offset_c=0, share_weights=True, ansatz_p=U_ansatz_pool_1, filter_p='!*'):
+  def __init__(self, ansatz_c=U_ansatz_conv_a, stride_c=1, step_c=1, offset_c=0, share_weights=True, ansatz_p=U_ansatz_pool_1, filter_p='!*', stride_p=0):
     # convolution params
     self.ansatz_c = ansatz_c
     self.stride_c = stride_c
@@ -14,8 +14,9 @@ class QCNNEstimator(BaseEstimator) :
     # pooling params
     self.ansatz_p = ansatz_p
     self.filter_p = filter_p
+    self.stride_p = stride_p
     # motif
-    self.hierq = qcnn_motif(ansatz_c=ansatz_c, conv_stride=stride_c, conv_step=step_c, conv_offset=offset_c, share_weights=share_weights, ansatz_p=ansatz_p, pool_filter=filter_p)
+    self.hierq = qcnn_motif(ansatz_c=ansatz_c, conv_stride=stride_c, conv_step=step_c, conv_offset=offset_c, share_weights=share_weights, ansatz_p=ansatz_p, pool_filter=filter_p, pool_stride=stride_p)
     self.symbols = []
 
   def fit(self, X, y, **kwargs):

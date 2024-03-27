@@ -9,15 +9,52 @@ In this work we generate the family of QCNN architectures resembling reverse bin
 
 # Background
 
+## Supervised Learning for classification
+The goal of classification is to use some data $X$ alongside a function $f_m$ (model) to accurately represent a discrete categorization $y$: 
+$$
+f_m(X, \theta) = \widehat{y} \approx y
+$$ 
+
+The data is used by iteratively changing the model parameters $\theta$ based on the disparity between the current representation $\widehat{y}$ and the actual categorization $y$, measured with a cost function $C(y, \widehat{y})$. The cost function I use in this project is Binary Cross Entropy (BCE) from `torch.nn.BCELoss`.
+
+Cross-entropy is a measure of the difference between two probability distributions for a given random variable or set of events. In other words, if we consider a target probability distribution $P$ and an approximation of the target distribution $Q$, then the cross-entropy of $Q$ from $P$ is the number of additional bits to represent an event using $Q$ instead of $P$:
+$$
+H(P,Q) = - \sum_{x \in X} P(x) \cdot ln(Q(x))
+$$
+
+## Convolutional Neural Networks
+
+Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design.
+
+## Quantum Machine Learning
+Using quantum computers it is possible to write hybrid quantum-classical algorithms already usable in the NISQ era, where the optimization of parameters is done classically and the function $f_m$ is built as a Variational Quantum Circuit (VQC) that acts on a quantum state $\ket{\psi}$. 
+
+A VQC is a quantum circuit with some trainable parameters, for example rotation angle $\theta: RY(\theta)$.
+
+The point in using a VQC is that the state can move along all Hilbert space at every change of the parameters, so it is possible to sample from a classically intractable probability density function (pdf).
+
+The state $\ket{\psi}$ must be obtained through an embedding since we're in a Classical-Quantum (CQ) setting and the data we use for training is classic. This is done with a _feature map_, as can be seen in @fig-vqc. 
+
+![Variational Quantum Circuit @vqc_tut](./img/vqc.png){#fig-vqc}
+
+### Data encoding
+A quantum embedding represents classical data as quantum states in a Hilbert space via a quantum feature map. It takes a classical data $x$ and translates it into a set of gate parameters in a quantum circuit, creating a quantum state $\ket{\psi_x}$.
+
+In this project I use _angle embedding_ to encode classical data from dataset to the circuit (see line 10 in @fig-code_circuit). With angle embedding, single-qubit rotation gates encode a classical $x_i \in \mathcal{R}$. 
+
+Each element of the input determines the angle of the rotation gate (e.g. an RY rotation gate). This approach requires $n$ qubits to encode $n$ input variables and can be defined as:
+$$
+\ket{\psi_x} = \bigotimes_{i=1}^n cos(x_i) \ket{0} + sin(x_i)\ket{1} = \bigotimes_{i=1}^n R(x_i)\ket{\psi_0}
+$$
+
+### QCNNs
 QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalisation capabilities and absence of _barren plateaus_.
 
 A _barren plateau_ happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes.
-For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hillbert space and the gradient estimation complexity on more than a few qubits.
+For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits.
 
 It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov.
 For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_.
-
-Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design. 
 
 The next step is learning network architecture, which NAS aims to achieve @elsken2019neural. NAS consists of 3 main components:
 
@@ -27,7 +64,6 @@ The next step is learning network architecture, which NAS aims to achieve @elske
 
 The _search space_ defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.
 
-
 ## HierarQcal
 
 HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. 
@@ -35,17 +71,73 @@ It makes automatic generation of QCNN circuits easy and it facilitates QCNN sear
 
 The package includes primitives such as _convolutions, pooling_ and _dense layers_ that can be stacked together hierarchically to form complex QCNN circuit architectures.
 
-# Music genre classification
+# Model implementation
 
-I use the dataset GTZAN from Kaggle
+## Dataset
+I use the dataset GTZAN from Kaggle @GTZAN_kaggle.
+
+## QCNN architecture
+
+![Main workflow... @lourens2023hierarchical](./img/workflow.png)
+
+Circuit
+
+```{python}
+#| label: fig-code_circuit
+#| eval: False
+#| code-line-numbers: True
+
+def get_circuit(hierq, x=None):
+    dev = qml.device("default.qubit.torch", wires=hierq.tail.Q, shots=None)
+
+    @qml.qnode(dev, interface="torch", diff_method="backprop")
+    def circuit():
+        if isinstance(next(hierq.get_symbols(), False), sp.Symbol):
+            # Pennylane doesn't support symbolic parameters, so if no symbols were set (i.e. they are still symbolic), we initialize them randomly
+            hierq.set_symbols(np.random.uniform(0, 2 * np.pi, hierq.n_symbols))
+        if x is not None:
+            AngleEmbedding(x, wires=hierq.tail.Q, rotation="Y")
+        hierq(backend="pennylane")  # This executes the compute graph in order
+        return qml.probs(wires=hierq.head.Q[0])
+
+    return circuit
+
+```
+
+The code below illustrates the motif built using HierarQcal.
+```{python}
+#|eval: false
+def qcnn_motif(ansatz_c, conv_stride, conv_step, conv_offset, share_weights, ansatz_p, pool_filter):
+    qcnn = (
+        Qinit(8)
+        + (
+            Qcycle(
+                stride=conv_stride,
+                step=conv_step,
+                offset=conv_offset,
+                mapping=ansatz_c,
+                share_weights=share_weights,
+            )
+            + Qmask(pool_filter, mapping=ansatz_p)
+        )
+        * 3
+    )
+
+    return qcnn
+```
 
 
 ```{python}
-import time
+#| echo: false
+#| tbl-cap: 'One-hot vectorization example'
+#| tbl-colwidths: [40, 30, 30]
+#| output: asis
 
-time.sleep(2.5)
-print("daiea")
+import pandas as pd
+df = pd.read_csv("../results/out_2024-03-25_11-21-56.csv")
+a = pd.concat((df["param_model__stride_c"], pd.DataFrame(df["param_model__filter_p"]), df["mean_test_score"]), axis=1)
+a.columns = ["Conv. stride", "Pool. filter", "Mean validation score"]
+a
 ```
 
-aa
-b
+The model was trained without batch for 100 epochs employing the Adam optimizer with a learning rate of $1×10−1$ that minimizes the Cross-Entropy Loss. All experiments were performed using Pytorch and the PennyLane Quantum library @pennylane on an AMD Ryzen 7 PRO 5850U with 16GB of RAM.

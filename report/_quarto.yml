@@ -2,7 +2,7 @@ project:
   type: book
   output-dir: build
 
-lang: it
+lang: en
 book:
   title: "QML project"
   author: 
@@ -21,6 +21,9 @@ csl: /home/ludovicowan/Dev/dev-tools/csl/nature.csl
 bibliography: references.bib
 latex-auto-mk: false
 pdf-engine: tectonic
+pdf-engine-opt: -p
+# output-file: index
+# keep-tex: true
 format:
   html:
     code-fold: false
