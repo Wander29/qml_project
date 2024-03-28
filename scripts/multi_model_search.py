@@ -28,22 +28,23 @@ pipeline = Pipeline(steps=[
 
 #--- Grid Search for hyperparameters
 grid_params = { 
-                # 'model__stride_c':list(range(1,8)),
-                'model__stride_c':[1],
-                # 'model__step_c':[1,2],
-                'model__step_c':[1],
+                'model__stride_c':list(range(1,8)),
+                # 'model__stride_c':[1],
+                'model__step_c':[1,2],
+                # 'model__step_c':[1],
                 # 'model__offset_c':list(range(1,8)),
                 'model__offset_c':[0],
-                # 'model__share_weights':[True, False],
-                'model__share_weights':[True],
+                'model__share_weights':[True, False],
+                # 'model__share_weights':[True],
                 
-                # 'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
-                'model__filter_p':["!*"],
-                # 'model__stride_p':list(range(0,4)),
-                'model__stride_p':[2],
+                'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
+                # 'model__filter_p':["!*"],
+                'model__stride_p':list(range(0,4)),
+                # 'model__stride_p':[2],
                 
-                'model__ansatz_c':["a"],
-                'model__ansatz_p':["1"],
+                # 'model__ansatz_c':["a", "b", "g"],
+                'model__ansatz_c':["b"],
+                'model__ansatz_p':["1", "2"],
               }
 
 grid = GridSearchCV(pipeline, grid_params, cv=3, n_jobs=8, verbose=True, refit=True)

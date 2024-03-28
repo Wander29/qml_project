@@ -1,8 +1,9 @@
 # Results
 
-I ran multiple test with various ansatzes. 
+I ran multiple test with various ansatzes, keep in mind @fig-conv_ansatzes and @fig-pool-ansatz for ansatzes naming.
 
-For convolution ansatz (a) (see @fig-conv_ansatzes) and pooling ansatz (1) I obtained the following results:
+## Convolution ansatz (a)
+For convolution ansatz (a) and pooling ansatz (1) I obtained the following results:
 
 ```{python}
 #| echo: false
@@ -36,6 +37,7 @@ The best configuration with `share_weights=True` selected was:
 - `pooling stride`: 3
 
 While the best configuration with `share_weights=False` selected was:
+
 - `convolution_stride`: 1
 - `convolution_step`: 1
 - `pooling filter`: *!
@@ -44,6 +46,7 @@ While the best configuration with `share_weights=False` selected was:
 Measuring them with the test set I obtain:
 
 ```{python}
+#| echo: False
 df = pd.DataFrame( {
   'share weights': [False, True],
   "accuracy":[0.83, 0.7],
@@ -54,3 +57,115 @@ df
 
 These are the results with the same convolution ansatz but with ansatz pooling (2):
 
+
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-28_07-40-00.csv")
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__share_weights"], 
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Share weights", "Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(6)
+```
+
+Since there are multiple configurations with the same validation score I try two of them on the test set:
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st", "4th"],
+  "accuracy":[0.78, 0.8],
+  "parameters": [26, 14]
+})
+df
+```
+
+Configuration number is referred to results above.
+
+## Convolution ansatz (b)
+These are the results with pooling ansatz (1).
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-28_08-28-01.csv")
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(6)
+```
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st", "2nd"],
+  "accuracy":[0.683, 0.75],
+  "parameters": [32, 20]
+})
+df
+```
+
+## Convolution ansatz (g)
+For convolution ansatz (g) I decided to fix `share_weights=True` since the number of parameters would have grown from 30 to 130.
+
+These are the results with pooling ansatz (1).
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-28_09-18-22.csv")
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(6)
+```
+
+I tried the first 3 configurations on the test set:
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st", "2nd", "3rd"],
+  "accuracy":[0.75, 0.867, 0.75],
+  "parameters": [36, 36, 36]
+})
+df
+```
+
+After discovering the high accuracy of the 2nd configuration I also tried to set `share_weight=False` only for this particular configuration and this is the result I obtained on the test set:
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'share weights': [False, True],
+  "accuracy":[0.883, 0.867],
+  "parameters": [136, 36]
+})
+df
+```
+
+I found these last two to be the most interesting architectures.
+
+<!--  add plot of loss function for best configurations -->
