@@ -1,5 +1,9 @@
 # Results
 
+I ran multiple test with various ansatzes. 
+
+For convolution ansatz (a) (see @fig-conv_ansatzes) and pooling ansatz (1) I obtained the following results:
+
 ```{python}
 #| echo: false
 #| tbl-cap: a
@@ -7,15 +11,46 @@
 #| output: asis
 
 import pandas as pd
-df = pd.read_csv("../../scripts/results/out_2024-03-25_11-21-56.csv")
-a = pd.concat((df["param_model__stride_c"], pd.DataFrame(df["param_model__filter_p"]), df["mean_test_score"]), axis=1)
-a.columns = ["Conv. stride", "Pool. filter", "Mean validation score"]
+df = pd.read_csv("../../scripts/results/out_2024-03-27_12-03-11.csv")
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__share_weights"], 
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Share weights", "Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
 a
+
 ```
 
+The best configuration with `share_weights=True` selected was:
+
+- `convolution_stride`: 7
+- `convolution_step`: 1
+- `pooling filter`: !*!
+- `pooling stride`: 3
+
+While the best configuration with `share_weights=False` selected was:
+- `convolution_stride`: 1
+- `convolution_step`: 1
+- `pooling filter`: *!
+- `pooling stride`: 2
+
+Measuring them with the test set I obtain:
+
 ```{python}
-#| column: page
-#| echo: false
-df = pd.read_csv("../../scripts/results/out_2024-03-25_11-21-56.csv")
+df = pd.DataFrame( {
+  'share weights': [False, True],
+  "accuracy":[0.83, 0.7],
+  "parameters": [32,12]
+})
 df
 ```
+
+These are the results with the same convolution ansatz but with ansatz pooling (2):
+

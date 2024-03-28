@@ -44,7 +44,10 @@ I used $N = 8$ qubits with pennylane `default.qubit.torch` as simulation device 
 
 ### Ansatzes
 I used 3 out of the 8 proposed ansatzes in Lourens et al. @lourens2023hierarchical, in particular:
-![Convolution ansatzes used in this project, from @lourens2023hierarchical](../img/ansatzes_conv.png){#fig-conv-ansatzes}
+
+::: {#fig-conv_ansatzes}
+![Convolution ansatzes used in this project, from @lourens2023hierarchical](../img/ansatzes_conv.png)
+:::
 
 Below there is the correspondent code for each ansatz:
 
@@ -158,9 +161,6 @@ def net(motif, symbols, x):
 ### Training
 The dataset has been split in 70% training set and 30% test set. During training, 3-fold cross validation is used for each model. This step is automated during the search for hyperparameters.
 
-Each model was trained without batch for 100 epochs employing the Adam optimizer with a learning rate of $1×10−1$ that minimizes the Cross-Entropy Loss (see training code in @fig-code_training). All experiments were performed using Pytorch and the PennyLane Quantum library @pennylane on an AMD Ryzen 7 PRO 5850U with 16GB of RAM.
-
-
 ```{python}
 #| label: fig-code_training
 #| eval: False
@@ -195,14 +195,41 @@ def objective_function(y_hat, y):
     return loss
 ```
 
+Each model was trained without batch for 100 epochs employing the Adam optimizer with a learning rate of $1×10−1$ that minimizes the Cross-Entropy Loss (see training code in @fig-code_training). All experiments were performed using Pytorch and the PennyLane Quantum library @pennylane on an AMD Ryzen 7 PRO 5850U with 16GB of RAM.
+
+
 ### Hyperparameters search {#sec-hyp_search}
 
+To search in the architectures space I fixed the ansatzes (both for convolution and pooling) then I used `GrisSearchCV` from `sklearn` to perform an exhaustive search over the grid of hyperparameters.
 
 ```{python}
 #| label: fig-code_search_hyp
 #| eval: False
 #| echo: True
 #| code-line-numbers: True
+from sklearn.model_selection import GridSearchCV
 
+grid_params = { 
+                'model__stride_c':list(range(1,8)),
+                'model__step_c':[1,2],
+                'model__share_weights':[True, False],
+                'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
+                'model__stride_p':list(range(0,4)),
+              }
 
+grid = GridSearchCV(pipeline, grid_params, cv=3, n_jobs=8, verbose=True, refit=True)
 ```
+
+In this way the preprocessing for each fold is managed internally and it is less error-prone. I needed to implement a subclass of `sklearn.base.BaseEstimator` and instantiate it as a last step of my pipeline in order to use `GridSearchCV`.
+
+The hyperparameters I decided to look for were:
+
+- `share_weights`: True or False
+- `convolution_stride`: between [1,7]
+- `convolution_step`: between [1,2]
+- `pooling filter`: between { left, right, outside, inside, odd, even }
+- `pooling stride`: between [0,3]
+
+These are not the total parameters possibile (for example it is also possible to set an `offset` for convolution). I decided to put as maximum limit of training runs $\approx 1000$ (considering 3 runs for each configuration given the cross validation), leaving all the parameters searched also in @lourens2023hierarchical.
+
+`share_weights` is an interesting parameter because by disabling it is possible to gain some accuracy at the cost of adding a large number of parameters. For example for ansatz (a) we pass from 6 to 26 parameters to optimize.`

@@ -12,6 +12,12 @@ from pennylane import numpy as np
 import torch
 from torch import nn
 
+# ================================
+# This file contains all the functions about 
+# circuits, motifs, training and ansatzes
+# ================================
+
+
 # seed for reproducibility
 torch.manual_seed(111)
 np.random.seed(111)
@@ -168,7 +174,25 @@ U_ansatz_pool_2 = Qunitary(ansatz_pool_2, n_symbols=0, arity=2)
 ### MOTIF BUILDER
 ##############################################################################
 
-def qcnn_motif(ansatz_c=U_ansatz_conv_a, conv_stride=1, conv_step=1, conv_offset=0, share_weights=True, ansatz_p=U_ansatz_pool_1, pool_filter="!*", pool_stride=0):
+def qcnn_motif(ansatz_c="a", conv_stride=1, conv_step=1, conv_offset=0, share_weights=True, ansatz_p="1", pool_filter="!*", pool_stride=0):
+    match ansatz_c:
+        case "a":
+            ac = U_ansatz_conv_a
+        case "b":
+            ac = U_ansatz_conv_b
+        case "g":
+            ac = U_ansatz_conv_g
+        case _:
+            assert(0)
+    
+    match ansatz_p:
+        case "1":
+            ap = U_ansatz_pool_1
+        case "2":
+            ap = U_ansatz_pool_2
+        case _:
+            assert(0)
+    
     qcnn = (
         Qinit(8)
         + (
@@ -176,10 +200,10 @@ def qcnn_motif(ansatz_c=U_ansatz_conv_a, conv_stride=1, conv_step=1, conv_offset
                 stride=conv_stride,
                 step=conv_step,
                 offset=conv_offset,
-                mapping=ansatz_c,
+                mapping=ac,
                 share_weights=share_weights,
             )
-            + Qmask(pool_filter, mapping=ansatz_p, strides=pool_stride)
+            + Qmask(pool_filter, mapping=ap, strides=pool_stride)
         )
         * 3
     )

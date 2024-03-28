@@ -13,6 +13,10 @@ import pandas as pd
 import os
 from datetime import datetime
 
+# ================================
+# This file contains the architecture search
+# ================================
+
 samples = data.data_load_and_split(["rock", "country"])
 
 estimator = qcnn_estimator.QCNNEstimator()
@@ -22,32 +26,24 @@ pipeline = Pipeline(steps=[
   ("model", estimator)
 ])
 
-
-# Other hyper parameters to try:
-# mask patterns: *!, !*, !*!, *!*, 01, 10
-# strides, steps and offsets for both Qmask and Qcycle 
-# share_weights
-# boundary conditions
-# ansatzes for convolution and pooling
-
 #--- Grid Search for hyperparameters
 grid_params = { 
-                'model__stride_c':list(range(1,8)),
-                # 'model__stride_c':[4],
-                # 'model__step_c':list(range(1,8)),
-                # 'model__step_c':list(range(1,3)),
-                'model__step_c':[1,2],
+                # 'model__stride_c':list(range(1,8)),
+                'model__stride_c':[1],
+                # 'model__step_c':[1,2],
+                'model__step_c':[1],
                 # 'model__offset_c':list(range(1,8)),
                 'model__offset_c':[0],
                 # 'model__share_weights':[True, False],
                 'model__share_weights':[True],
                 
-                'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
-                # 'model__filter_p':["!*",],
-                'model__stride_p':list(range(0,4)),
+                # 'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
+                'model__filter_p':["!*"],
+                # 'model__stride_p':list(range(0,4)),
+                'model__stride_p':[2],
                 
-                'model__ansatz_c':[U_ansatz_conv_g],
-                'model__ansatz_p':[U_ansatz_pool_1],
+                'model__ansatz_c':["a"],
+                'model__ansatz_p':["1"],
               }
 
 grid = GridSearchCV(pipeline, grid_params, cv=3, n_jobs=8, verbose=True, refit=True)

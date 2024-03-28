@@ -6,6 +6,12 @@ from sklearn.pipeline import Pipeline
 import pandas as pd
 from pennylane import numpy as np
 
+# ================================
+# This file contains functions for loading the data,
+# get the data about 2 genres and eventually preprocess it.
+# ================================
+
+# put here you path to the dataset
 PATH_DATA = "/home/ludovicowan/Files/datasets/GTZan_dataset/features_30_sec.csv"
 Samples = namedtuple("samples", ["x_train", "x_test", "y_train", "y_test"])
 

@@ -7,8 +7,7 @@
   13pt,
   a4paper,
   DIV=11,
-  numbers=noendperiod,
-  oneside]{scrreprt}
+  numbers=noendperiod]{scrreprt}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -204,10 +203,6 @@
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
-\makeatother
-\makeatletter
-\@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
-\@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
 \makeatother
 \ifLuaTeX
 \usepackage[bidi=basic]{babel}
@@ -409,7 +404,10 @@ components:
 
 The \emph{search space} defines the set of possible architectures that a
 search algorithm can consider, and a carefully designed search space is
-important for search efficiency.
+important for search efficiency. The main contribution of
+{[}\citeproc{ref-lourens2023hierarchical}{1}{]} is a framework that
+enables the dynamic generation of QCNN and the creation of QCNN search
+spaces: HierarQcal.
 
 \section{HierarQcal}\label{hierarqcal}
 
@@ -422,6 +420,8 @@ search space design for NAS.
 The package includes primitives such as \emph{convolutions, pooling} and
 \emph{dense layers} that can be stacked together hierarchically to form
 complex QCNN circuit architectures.
+
+\ldots.
 
 \bookmarksetup{startatroot}
 
@@ -494,6 +494,16 @@ be discussed in Section~\ref{sec-hyp_search}).
 \end{Highlighting}
 \end{Shaded}
 
+Each row of the data resulting from the preprocessing has 8 features and
+so it can be encoded through an angle embedding into a quantum circuit
+with 8 qubit. The quantum circuit used here is a QCNN with a
+hierarchical design: the idea is to reduce the system size in half until
+one qubit remains while alternating between convolution and pooling
+operations. Grant et al. {[}\citeproc{ref-grant2018hierarchical}{10}{]}
+exhibited the success of hierarchical designs that resemble reverse
+binary trees. To create a space of these architectures only three levels
+of motifs are needed.
+
 \begin{figure}[H]
 
 {\centering \includegraphics{chapters/../img/workflow.png}
@@ -516,7 +526,29 @@ ansatzes.
 
 I used 3 out of the 8 proposed ansatzes in Lourens et al.
 {[}\citeproc{ref-lourens2023hierarchical}{1}{]}, in particular:
-\includegraphics{chapters/../img/ansatzes_conv.png}
+
+\begin{figure}
+
+\centering{
+
+\captionsetup{labelsep=none}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{chapters/../img/ansatzes_conv.png}
+
+}
+
+\caption{Convolution ansatzes used in this project, from
+{[}\citeproc{ref-lourens2023hierarchical}{1}{]}}
+
+\end{figure}%
+
+}
+
+\caption{\label{fig-conv_ansatzes}}
+
+\end{figure}%
 
 Below there is the correspondent code for each ansatz:
 
@@ -566,7 +598,7 @@ For pooling ansatz I used:
 
 }
 
-\subcaption{(1) Pooling ansatz from {[}\citeproc{ref-Hur2022Jun}{10}{]}}
+\subcaption{(1) Pooling ansatz from {[}\citeproc{ref-Hur2022Jun}{11}{]}}
 
 \end{figure}%
 
@@ -592,9 +624,9 @@ For pooling ansatz I used:
 
 \subsection{Circuit}\label{circuit}
 
-The code below illustrates how a general motif is built using
-HierarQcal. This motif is the base for every model I used in this
-project.
+The code below illustrates how a general motif that resembles reverse
+binary trees is built using HierarQcal. This motif is the base for every
+model I used in this project.
 
 \begin{Shaded}
 \begin{Highlighting}[numbers=left,,]
@@ -619,7 +651,7 @@ project.
 \end{Shaded}
 
 The motif obtained from \texttt{qcnn\_motif} is not ready to be
-executed. It must be translated to a pennylane circuit and also the
+executed. It needs to be translated to a pennylane circuit and also the
 input \(x \in \mathcal{R}^8\) must be embedded into this circuit.
 
 \begin{figure}
@@ -669,13 +701,9 @@ The real execution with input \texttt{x} and circuit parameters
 
 \subsection{Training}\label{training}
 
-Each model was trained without batch for 100 epochs employing the Adam
-optimizer with a learning rate of \(1×10−1\) that minimizes the
-Cross-Entropy Loss (see training code in
-Figure~\ref{fig-code_training}). All experiments were performed using
-Pytorch and the PennyLane Quantum library
-{[}\citeproc{ref-pennylane}{11}{]} on an AMD Ryzen 7 PRO 5850U with 16GB
-of RAM.
+The dataset has been split in 70\% training set and 30\% test set.
+During training, 3-fold cross validation is used for each model. This
+step is automated during the search for hyperparameters.
 
 \begin{figure}
 
@@ -720,66 +748,116 @@ of RAM.
 
 \end{figure}%
 
+Each model was trained without batch for 100 epochs employing the Adam
+optimizer with a learning rate of \(1×10−1\) that minimizes the
+Cross-Entropy Loss (see training code in
+Figure~\ref{fig-code_training}). All experiments were performed using
+Pytorch and the PennyLane Quantum library
+{[}\citeproc{ref-pennylane}{12}{]} on an AMD Ryzen 7 PRO 5850U with 16GB
+of RAM.
+
 \subsection{Hyperparameters search}\label{sec-hyp_search}
+
+To search in the architectures space I fixed the ansatzes (both for
+convolution and pooling) then I used \texttt{GrisSearchCV} from
+\texttt{sklearn} to perform an exhaustive search over the grid of
+hyperparameters.
+
+\begin{figure}
+
+\centering{
+
+\captionsetup{labelsep=none}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\ImportTok{from}\NormalTok{ sklearn.model\_selection }\ImportTok{import}\NormalTok{ GridSearchCV}
+
+\NormalTok{grid\_params }\OperatorTok{=}\NormalTok{ \{ }
+                \StringTok{\textquotesingle{}model\_\_stride\_c\textquotesingle{}}\NormalTok{:}\BuiltInTok{list}\NormalTok{(}\BuiltInTok{range}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{8}\NormalTok{)),}
+                \StringTok{\textquotesingle{}model\_\_step\_c\textquotesingle{}}\NormalTok{:[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{],}
+                \StringTok{\textquotesingle{}model\_\_share\_weights\textquotesingle{}}\NormalTok{:[}\VariableTok{True}\NormalTok{, }\VariableTok{False}\NormalTok{],}
+                \StringTok{\textquotesingle{}model\_\_filter\_p\textquotesingle{}}\NormalTok{:[}\StringTok{"!*"}\NormalTok{,}\StringTok{"*!"}\NormalTok{, }\StringTok{"!*!"}\NormalTok{, }\StringTok{"*!*"}\NormalTok{, }\StringTok{"01"}\NormalTok{, }\StringTok{"10"}\NormalTok{], }\CommentTok{\#left, right, outside, inside, 01, 10\#}
+                \StringTok{\textquotesingle{}model\_\_stride\_p\textquotesingle{}}\NormalTok{:}\BuiltInTok{list}\NormalTok{(}\BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{4}\NormalTok{)),}
+\NormalTok{              \}}
+
+\NormalTok{grid }\OperatorTok{=}\NormalTok{ GridSearchCV(pipeline, grid\_params, cv}\OperatorTok{=}\DecValTok{3}\NormalTok{, n\_jobs}\OperatorTok{=}\DecValTok{8}\NormalTok{, verbose}\OperatorTok{=}\VariableTok{True}\NormalTok{, refit}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+}
+
+\caption{\label{fig-code_search_hyp}}
+
+\end{figure}%
+
+In this way the preprocessing for each fold is managed internally and it
+is less error-prone. I needed to implement a subclass of
+\texttt{sklearn.base.BaseEstimator} and instantiate it as a last step of
+my pipeline in order to use \texttt{GridSearchCV}.
+
+The hyperparameters I decided to look for were:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{share\_weights}: True or False
+\item
+  \texttt{convolution\_stride}: between {[}1,7{]}
+\item
+  \texttt{convolution\_step}: between {[}1,2{]}
+\item
+  \texttt{pooling\ filter}: between \{ left, right, outside, inside,
+  odd, even \}
+\item
+  \texttt{pooling\ stride}: between {[}0,3{]}
+\end{itemize}
+
+These are not the total parameters possibile (for example it is also
+possible to set an \texttt{offset} for convolution). I decided to put as
+maximum limit of training runs \(\approx 1000\) (considering 3 runs for
+each configuration given the cross validation), leaving all the
+parameters searched also in
+{[}\citeproc{ref-lourens2023hierarchical}{1}{]}.
+
+\texttt{share\_weights} is an interesting parameter because by disabling
+it is possible to gain some accuracy at the cost of adding a large
+number of parameters. For example for ansatz (a) we pass from 6 to 26
+parameters to optimize.
 
 \bookmarksetup{startatroot}
 
 \chapter{Results}\label{results}
 
-\begin{longtable}[]{@{}llll@{}}
+I ran multiple test with various ansatzes.
+
+For ansatz (a) (see Figure~\ref{fig-conv_ansatzes}) I obtained the
+following results:
+
+\begin{longtable}[]{@{}lllll@{}}
 \caption{a}\tabularnewline
 \toprule\noalign{}
-& Conv. stride & Pool. filter & Mean validation score \\
+& Conv. stride & Pool. filter & share weights & Mean validation score \\
 \midrule\noalign{}
 \endfirsthead
 \toprule\noalign{}
-& Conv. stride & Pool. filter & Mean validation score \\
+& Conv. stride & Pool. filter & share weights & Mean validation score \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-0 & 2 & !* & 0.635831 \\
-1 & 3 & !* & 0.635831 \\
-2 & 2 & !* & 0.635831 \\
-3 & 3 & !* & 0.706753 \\
+0 & 1 & !* & True & 0.599445 \\
+1 & 1 & !* & True & 0.599445 \\
+2 & 1 & !* & True & 0.686401 \\
+3 & 1 & !* & True & 0.693494 \\
+4 & 2 & !* & True & 0.693494 \\
+... & ... & ... & ... & ... \\
+331 & 6 & 10 & False & 0.650324 \\
+332 & 7 & 10 & False & 0.607771 \\
+333 & 7 & 10 & False & 0.593586 \\
+334 & 7 & 10 & False & 0.542707 \\
+335 & 7 & 10 & False & 0.664508 \\
 \end{longtable}
-
-\begin{figure*}[H]
-
-\begin{longtable}[]{@{}lllllllllllllll@{}}
-\toprule\noalign{}
-& mean\_fit\_time & std\_fit\_time & mean\_score\_time &
-std\_score\_time & param\_model\_\_ansatz\_c & param\_model\_\_filter\_p
-& param\_model\_\_stride\_c & params & split0\_test\_score &
-split1\_test\_score & split2\_test\_score & mean\_test\_score &
-std\_test\_score & rank\_test\_score \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-0 & 10.793296 & 0.347921 & 0.037981 & 0.007140 & \textless function
-ansatz\_conv\_a at 0x7ca9ed8677e0\textgreater{} & !* & 2 &
-\{\textquotesingle model\_\_ansatz\_c\textquotesingle:
-\textless function ansatz\_conv\_a at... & 0.617021 & 0.638298 &
-0.652174 & 0.635831 & 0.014457 & 2 \\
-1 & 12.215396 & 0.224386 & 0.059163 & 0.033038 & \textless function
-ansatz\_conv\_a at 0x7ca9ed8677e0\textgreater{} & !* & 3 &
-\{\textquotesingle model\_\_ansatz\_c\textquotesingle:
-\textless function ansatz\_conv\_a at... & 0.617021 & 0.638298 &
-0.652174 & 0.635831 & 0.014457 & 2 \\
-2 & 10.055170 & 2.614856 & 0.032793 & 0.011116 & \textless function
-ansatz\_conv\_g at 0x7ca9ed8676a0\textgreater{} & !* & 2 &
-\{\textquotesingle model\_\_ansatz\_c\textquotesingle:
-\textless function ansatz\_conv\_g at... & 0.617021 & 0.638298 &
-0.652174 & 0.635831 & 0.014457 & 2 \\
-3 & 6.129618 & 0.297227 & 0.017946 & 0.001733 & \textless function
-ansatz\_conv\_g at 0x7ca9ed8676a0\textgreater{} & !* & 3 &
-\{\textquotesingle model\_\_ansatz\_c\textquotesingle:
-\textless function ansatz\_conv\_g at... & 0.787234 & 0.680851 &
-0.652174 & 0.706753 & 0.058100 & 1 \\
-\end{longtable}
-
-\end{figure*}
 
 \bookmarksetup{startatroot}
 
@@ -851,15 +929,23 @@ D., \textsc{Ellis}, D. P., \textsc{McVicar}, M., \textsc{Battenberg}, E.
 and \textsc{Nieto}, O. (2015). Librosa: Audio and music signal analysis
 in python. In \emph{SciPy} pp 18--24.}
 
-\bibitem[\citeproctext]{ref-Hur2022Jun}
+\bibitem[\citeproctext]{ref-grant2018hierarchical}
 \CSLLeftMargin{{[}10{]} }%
+\CSLRightInline{\textsc{Grant}, E., \textsc{Benedetti}, M.,
+\textsc{Cao}, S., \textsc{Hallam}, A., \textsc{Lockhart}, J.,
+\textsc{Stojevic}, V., \textsc{Green}, A. G. and \textsc{Severini}, S.
+(2018). Hierarchical quantum classifiers. \emph{npj Quantum Information}
+\textbf{4} 65.}
+
+\bibitem[\citeproctext]{ref-Hur2022Jun}
+\CSLLeftMargin{{[}11{]} }%
 \CSLRightInline{\textsc{Hur}, T., \textsc{Kim}, L. and \textsc{Park}, D.
 K. (2022). \href{https://doi.org/10.1007/s42484-021-00061-x}{{Quantum
 convolutional neural network for classical data classification}}.
 \emph{Quantum Mach. Intell.} \textbf{4} 1--18.}
 
 \bibitem[\citeproctext]{ref-pennylane}
-\CSLLeftMargin{{[}11{]} }%
+\CSLLeftMargin{{[}12{]} }%
 \CSLRightInline{\textsc{Bergholm}, V., \textsc{Izaac}, J.,
 \textsc{Schuld}, M., \textsc{Gogolin}, C., \textsc{Ahmed}, S.,
 \textsc{Ajith}, V., \textsc{Alam}, M. S., \textsc{Alonso-Linaje}, G.,

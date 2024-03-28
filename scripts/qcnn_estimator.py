@@ -3,8 +3,13 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from single_model_train import (U_ansatz_conv_a, U_ansatz_pool_1, qcnn_motif, train, net, accuracy)
 
+# ================================
+# Subclass of sklearn.base.BaseEstimator to be used for GridSearchCV 
+# as last step of a pipeline
+# ================================
+
 class QCNNEstimator(BaseEstimator) :
-  def __init__(self, ansatz_c=U_ansatz_conv_a, stride_c=1, step_c=1, offset_c=0, share_weights=True, ansatz_p=U_ansatz_pool_1, filter_p='!*', stride_p=0):
+  def __init__(self, ansatz_c="a", stride_c=1, step_c=1, offset_c=0, share_weights=True, ansatz_p="1", filter_p='!*', stride_p=0):
     # convolution params
     self.ansatz_c = ansatz_c
     self.stride_c = stride_c

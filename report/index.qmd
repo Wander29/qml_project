@@ -2,7 +2,7 @@
 
 In this project work I tried to replicate some of the results of the paper "Hierarchical quantum circuit representations for neural architecture search" @lourens2023hierarchical.
 
-In this paper the authors propose a framework named HierarQcal for representing Quantum Convolutional Neural Networks (QCNN) architectures using techniques from Neural Architectural Search (NAS). This framework enables search space design and architecture search, the former being the most challenging point in applying NAS to QCNN. 
+In this paper the authors propose a framework named HierarQcal for representing Quantum Convolutional Neural Networks (QCNN) architectures using techniques from Neural Architectural Search (NAS). This framework enables search space design and architecture search, the former being the most challenging point in applying NAS to QCNN.
 
 In this work I generate the family of QCNN architectures resembling reverse binary trees and I evaluate this family on the GTZAN music genre classification dataset showing that it is possible to improve model performance without increasing complexity.
 
