@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from pennylane import numpy as np
 from sklearn.decomposition import PCA
 from single_model_train import (
-  U_ansatz_conv_a, U_ansatz_conv_g,
+  U_ansatz_conv_a, U_ansatz_conv_b, U_ansatz_conv_g,
   U_ansatz_pool_1, U_ansatz_pool_2
 )
 import qcnn_estimator
@@ -35,17 +35,18 @@ grid_params = {
                 'model__stride_c':list(range(1,8)),
                 # 'model__stride_c':[4],
                 # 'model__step_c':list(range(1,8)),
-                'model__step_c':[1],
+                # 'model__step_c':list(range(1,3)),
+                'model__step_c':[1,2],
                 # 'model__offset_c':list(range(1,8)),
                 'model__offset_c':[0],
-                'model__share_weights':[True, False],
+                # 'model__share_weights':[True, False],
+                'model__share_weights':[True],
                 
                 'model__filter_p':["!*","*!", "!*!", "*!*", "01", "10"], #left, right, outside, inside, 01, 10#
-                'model__stride_p':list(range(0,4)),
                 # 'model__filter_p':["!*",],
-                # 'model__ansatz_c':[U_ansatz_conv_a, U_ansatz_conv_g],
-                'model__ansatz_c':[U_ansatz_conv_a],
-                # 'model__ansatz_p':[U_ansatz_pool_1, U_ansatz_pool_2],
+                'model__stride_p':list(range(0,4)),
+                
+                'model__ansatz_c':[U_ansatz_conv_g],
                 'model__ansatz_p':[U_ansatz_pool_1],
               }
 

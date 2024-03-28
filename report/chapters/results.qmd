@@ -1,0 +1,21 @@
+# Results
+
+```{python}
+#| echo: false
+#| tbl-cap: a
+#| tbl-colwidths: [40, 30, 30]
+#| output: asis
+
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-25_11-21-56.csv")
+a = pd.concat((df["param_model__stride_c"], pd.DataFrame(df["param_model__filter_p"]), df["mean_test_score"]), axis=1)
+a.columns = ["Conv. stride", "Pool. filter", "Mean validation score"]
+a
+```
+
+```{python}
+#| column: page
+#| echo: false
+df = pd.read_csv("../../scripts/results/out_2024-03-25_11-21-56.csv")
+df
+```

@@ -1,10 +1,10 @@
 project:
   type: book
   output-dir: build
-
+# output-file: "index.pdf" #doesn't work
 lang: en
 book:
-  title: "QML project"
+  title: "Hierarchical quantum circuit representation for music genre classification"
   author:
     - name: Ludovico Venturi
       email: ludovico.venturi@edu.unifi.it
@@ -13,19 +13,18 @@ book:
   chapters:
     - index.qmd
     - chapters/background.qmd
-    - chapters/model.qmd
+    - chapters/methods.qmd
+    - chapters/results.qmd
     - chapters/references.qmd
 
 toc: true
 number-sections: true
 number-depth: 2
-csl: /home/ludovicowan/Dev/dev-tools/csl/nature.csl
+csl: /home/ludovicowan/Dev/dev-tools/csl/statistical-science.csl
 bibliography: references.bib
-latex-auto-mk: false
-pdf-engine: tectonic
-pdf-engine-opt: -p
-# output-file: index
-# keep-tex: true
+latex-output-dir: build
+keep-tex: true
+# pdf-engine: tectonic
 format:
   html:
     code-fold: false
@@ -36,6 +35,8 @@ format:
     execute:
       cache: true
   pdf:
+    output-file: "output_file_name"
+    output-ext:  "pdf"
     documentclass: scrreprt
     link-citations: true
     geometry:

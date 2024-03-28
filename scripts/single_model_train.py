@@ -107,6 +107,20 @@ def draw_circuit(circuit, **kwargs):
 # ========================================== 
 # == CONVOLUTION ANSATZES
 
+def ansatz_conv_a(bits, symbols=None):  # 2 params
+  qml.RY(symbols[0], wires=[bits[0]])
+  qml.RY(symbols[1], wires=[bits[1]])
+  qml.CNOT(wires=[bits[0], bits[1]])
+U_ansatz_conv_a = Qunitary(ansatz_conv_a, n_symbols=2, arity=2)
+
+def ansatz_conv_b(bits, symbols=None):  # 2 params
+  qml.Hadamard(wires=[bits[0]])
+  qml.Hadamard(wires=[bits[1]])
+  qml.CZ(wires=[bits[0], bits[1]])
+  qml.RX(symbols[0], wires=[bits[0]])
+  qml.RX(symbols[1], wires=[bits[1]])
+U_ansatz_conv_b = Qunitary(ansatz_conv_b, n_symbols=2, arity=2)
+
 def ansatz_conv_g(bits, symbols):  # 10 params
     qml.RX(symbols[0], wires=bits[0])
     qml.RX(symbols[1], wires=bits[1])
@@ -120,13 +134,7 @@ def ansatz_conv_g(bits, symbols):  # 10 params
     qml.RZ(symbols[9], wires=bits[1])
 U_ansatz_conv_g = Qunitary(ansatz_conv_g, n_symbols=10, arity=2)
 
-def ansatz_conv_a(bits, symbols=None):  # 2 params
-  qml.RY(symbols[0], wires=[bits[0]])
-  qml.RY(symbols[1], wires=[bits[1]])
-  qml.CNOT(wires=[bits[0], bits[1]])
-U_ansatz_conv_a = Qunitary(ansatz_conv_a, n_symbols=2, arity=2)
-
-# The same could be written in HierarQcal
+# The ansatz b could be also written in HierarQcal as:
 # ansatz_ex2 = (
 #     Qinit(2)
 #     + Qmotif(E=[(0, 1)], mapping=hierq_gates["CRY"])

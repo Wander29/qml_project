@@ -1,0 +1,208 @@
+# Methods
+
+## Dataset
+The GTZAN dataset @gtzan_tzanetakis_essl_cook_2001 is the most-used public dataset for evaluation in machine listening research for music genre recognition (MGR). The files were collected in 2000-2001 from a variety of sources including personal CDs, radio, microphone recordings, in order to represent a variety of recording conditions.
+
+The dataset consists of 1000 audio tracks each 30 seconds long. It contains 10 genres, each represented by 100 tracks. The tracks are all 22050Hz Mono 16-bit audio files in `.wav` format. The genres are: blues,classical, country, disco, hiphop, jazz, metal, pop, reggae, rock.
+
+I used the GTZAN dataset from Kaggle @GTZAN_kaggle, which already include statistics extracted from the audio sources. The information gathered from audio signals to produce the tabular dataset can be easily extracted with `librosa` ^[a Python package for audio and music signal processing @mcfee2015librosa] and contains: Chroma frequencies, Harmonic and percussive elements, Mel-frequency cepstral coefficients, Spectral bandwidth and others. For a description of these and other features see Appendix D of @lourens2023hierarchical.
+
+I did binary classification in this analysis, in particular I focused only on _rock vs country_ classification, the most difficult task between all the $\binom{10}{2} = 45$ possible genre pairs.
+
+## Model implementation
+
+### Main workflow
+Data is first preprocessed in two ways: 
+
+-  feature scaling  
+-  feature reduction 
+
+Features are scaled using `min-max` scaling in a range chosen for angle embedding: $[0, \pi/2]$. Then Principal Component Anaylisis with 8 components is used to perform the reduction. 
+
+I used `sklearn` for both operations. I also used `Pipeline` from `sklearn` to create a preprocessing pipeline that will be used for the search of hyperparameters (that will be discussed in @sec-hyp_search).
+
+```{python}
+#| eval: False
+#| code-line-numbers: True
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+
+pipeline = Pipeline(
+    [
+        ("scaler", MinMaxScaler((0, np.pi / 2))),
+        ("pca", PCA(8)),
+    ]
+)
+```
+
+Each row of the data resulting from the preprocessing has 8 features and so it can be encoded through an angle embedding into a quantum circuit with 8 qubit. The quantum circuit used here is a QCNN with a hierarchical design: the idea is to reduce the system size in half until one qubit remains while alternating between convolution and pooling operations. Grant et al. @grant2018hierarchical exhibited the success of hierarchical designs that resemble reverse binary trees. To create a space of these architectures only three levels of motifs are needed.
+
+![Main workflow of model implementation. $U$s are convolutional unitaries and $V$s a re pooling unitaries. From @lourens2023hierarchical](../img/workflow.png)
+
+I used $N = 8$ qubits with pennylane `default.qubit.torch` as simulation device (see line 2 in @fig-code_circuit). I tested each model based on different combinations of model architecture (that will be discussed in more detail later) and two-qubit unitary ansatzes.
+
+### Ansatzes
+I used 3 out of the 8 proposed ansatzes in Lourens et al. @lourens2023hierarchical, in particular:
+![Convolution ansatzes used in this project, from @lourens2023hierarchical](../img/ansatzes_conv.png){#fig-conv-ansatzes}
+
+Below there is the correspondent code for each ansatz:
+
+```{python}
+#| eval: False
+#| echo: True
+
+# Convolution ansatz (a) 
+def ansatz_conv_a(bits, symbols=None):
+  qml.RY(symbols[0], wires=[bits[0]])
+  qml.RY(symbols[1], wires=[bits[1]])
+  qml.CNOT(wires=[bits[0], bits[1]])
+U_ansatz_conv_a = Qunitary(ansatz_conv_a, n_symbols=2, arity=2)
+
+# Convolution ansatz (b) 
+def ansatz_conv_b(bits, symbols=None):
+  qml.Hadamard(wires=[bits[0]])
+  qml.Hadamard(wires=[bits[1]])
+  qml.CZ(wires=[bits[0], bits[1]])
+  qml.RX(symbols[0], wires=[bits[0]])
+  qml.RX(symbols[1], wires=[bits[1]])
+U_ansatz_conv_b = Qunitary(ansatz_conv_b, n_symbols=2, arity=2)
+
+# Convolution ansatz (g) 
+def ansatz_conv_g(bits, symbols):
+    qml.RX(symbols[0], wires=bits[0])
+    qml.RX(symbols[1], wires=bits[1])
+    qml.RZ(symbols[2], wires=bits[0])
+    qml.RZ(symbols[3], wires=bits[1])
+    qml.CRZ(symbols[4], wires=[bits[1], bits[0]])
+    qml.CRZ(symbols[5], wires=[bits[0], bits[1]])
+    qml.RX(symbols[6], wires=bits[0])
+    qml.RX(symbols[7], wires=bits[1])
+    qml.RZ(symbols[8], wires=bits[0])
+    qml.RZ(symbols[9], wires=bits[1])
+U_ansatz_conv_g = Qunitary(ansatz_conv_g, n_symbols=10, arity=2)
+
+```
+
+For pooling ansatz I used:
+
+::: {#fig-pool-ansatz  layout-ncol=2}
+![(1) Pooling ansatz from @Hur2022Jun](../img/ansatz_pool.png){height=150}
+
+![(2) Simpler pooling ansatz](../img/ansatz_pool_simpler.png){height=140}
+
+Pooling ansatzes
+:::
+
+### Circuit
+The code below illustrates how a general motif that resembles reverse binary trees is 
+built using HierarQcal. This motif is the base for every model I used in this project.
+```{python}
+#| eval: False
+#| code-line-numbers: True
+def qcnn_motif(ansatz_c, conv_stride, conv_step, conv_offset, share_weights, ansatz_p, pool_filter, pool_stride):
+    qcnn = (
+        Qinit(8)
+        + (
+            Qcycle(
+                stride=conv_stride,
+                step=conv_step,
+                offset=conv_offset,
+                mapping=ansatz_c,
+                share_weights=share_weights,
+            )
+            + Qmask(pool_filter, mapping=ansatz_p, strides=pool_stride)
+        )
+        * 3
+    )
+
+    return qcnn
+```
+
+The motif obtained from `qcnn_motif` is not ready to be executed. It needs to be translated to a pennylane circuit and also the input $x \in \mathcal{R}^8$ must be embedded into this circuit.
+
+```{python}
+#| label: fig-code_circuit
+#| eval: False
+#| code-line-numbers: True
+
+def get_circuit(hierq, x=None):
+    dev = qml.device("default.qubit.torch", wires=hierq.tail.Q, shots=None)
+
+    @qml.qnode(dev, interface="torch", diff_method="backprop")
+    def circuit():
+        if isinstance(next(hierq.get_symbols(), False), sp.Symbol):
+            # Pennylane doesn't support symbolic parameters, so if no symbols were set (i.e. they are still symbolic), we initialize them randomly
+            hierq.set_symbols(np.random.uniform(0, 2 * np.pi, hierq.n_symbols))
+        if x is not None:
+            AngleEmbedding(x, wires=hierq.tail.Q, rotation="Y")
+        hierq(backend="pennylane")  # This executes the compute graph in order
+        return qml.probs(wires=hierq.head.Q[0])
+
+    return circuit
+```
+
+The real execution with input `x` and circuit parameters `symbols` is done with:
+```{python}
+#| eval: False
+#| echo: True
+#| code-line-numbers: True
+def net(motif, symbols, x):
+    motif.set_symbols(symbols)
+    circuit = get_circuit(motif, x)
+    y_hat = circuit()
+
+    return y_hat
+```
+
+### Training
+The dataset has been split in 70% training set and 30% test set. During training, 3-fold cross validation is used for each model. This step is automated during the search for hyperparameters.
+
+Each model was trained without batch for 100 epochs employing the Adam optimizer with a learning rate of $1×10−1$ that minimizes the Cross-Entropy Loss (see training code in @fig-code_training). All experiments were performed using Pytorch and the PennyLane Quantum library @pennylane on an AMD Ryzen 7 PRO 5850U with 16GB of RAM.
+
+
+```{python}
+#| label: fig-code_training
+#| eval: False
+#| echo: True
+#| code-line-numbers: True
+
+def train(x, y, motif, N=100, lr=0.1, verbose=True):
+    n_symbols = motif.n_symbols
+    if n_symbols > 0:
+        symbols = torch.rand(n_symbols, requires_grad=True)
+        opt = torch.optim.Adam([symbols], lr=lr)
+        for it in range(N):
+            opt.zero_grad() # reset gradients
+            y_hat = net(motif, symbols, x)
+            loss = objective_function(y_hat, y)
+            loss.backward()
+            opt.step()
+
+            if verbose:
+                if it % 25 == 0:
+                    print(f"Loss at step {it}: {loss}")
+    else:
+        symbols = None
+        loss = objective_function(motif, [], x, y)
+    return symbols, loss
+
+def objective_function(y_hat, y):
+    loss = nn.BCELoss()
+    assert(len(y_hat) == len(y))
+    # index 1 corresponds to predictions for being in class 1
+    loss = loss(y_hat[:, 1], torch.tensor(y, dtype=torch.double))
+    return loss
+```
+
+### Hyperparameters search {#sec-hyp_search}
+
+
+```{python}
+#| label: fig-code_search_hyp
+#| eval: False
+#| echo: True
+#| code-line-numbers: True
+
+
+```

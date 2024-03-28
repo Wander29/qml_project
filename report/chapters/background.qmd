@@ -6,9 +6,9 @@ $$
 f_m(X, \theta) = \widehat{y} \approx y
 $$ 
 
-The data is used by iteratively changing the model parameters $\theta$ based on the disparity between the current representation $\widehat{y}$ and the actual categorization $y$, measured with a cost function $C(y, \widehat{y})$. The cost function I use in this project is Binary Cross Entropy (BCE) from `torch.nn.BCELoss`.
+The data is used by iteratively changing the model parameters $\theta$ based on the disparity between the current representation $\widehat{y}$ and the actual categorization $y$, measured with a cost function $C(y, \widehat{y})$. It's a supervised problem because the label of each input is known from the start.
 
-Cross-entropy is a measure of the difference between two probability distributions for a given random variable or set of events. In other words, if we consider a target probability distribution $P$ and an approximation of the target distribution $Q$, then the cross-entropy of $Q$ from $P$ is the number of additional bits to represent an event using $Q$ instead of $P$:
+The cost function I use in this project is Binary Cross Entropy (BCE) from `torch.nn.BCELoss`. Cross-entropy is a measure of the difference between two probability distributions for a given random variable or set of events. In other words, if we consider a target probability distribution $P$ and an approximation of the target distribution $Q$, then the cross-entropy of $Q$ from $P$ is the number of additional bits to represent an event using $Q$ instead of $P$:
 $$
 H(P,Q) = - \sum_{x \in X} P(x) \cdot ln(Q(x))
 $$
@@ -17,21 +17,23 @@ $$
 
 Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design.
 
-## Quantum Machine Learning
-Using quantum computers it is possible to write hybrid quantum-classical algorithms already usable in the NISQ era, where the optimization of parameters is done classically and the function $f_m$ is built as a Variational Quantum Circuit (VQC) that acts on a quantum state $\ket{\psi}$. 
+....
 
-A VQC is a quantum circuit with some trainable parameters, for example rotation angle $\theta: RY(\theta)$.
+## Quantum Machine Learning
+Using quantum computers it is possible to write hybrid quantum-classical algorithms already usable in the NISQ era, where the optimization of parameters is done classically and the function $f_m$ is built as a Variational Quantum Circuit (VQC) that acts on a quantum state $\ket{\psi}$.
+
+A VQC is a quantum circuit with trainable parameters in some gates, as a rotation angle $\theta, e.g. RY(\theta)$.
 
 The point in using a VQC is that the state can move along all Hilbert space at every change of the parameters, so it is possible to sample from a classically intractable probability density function (pdf).
 
-The state $\ket{\psi}$ must be obtained through an embedding since we're in a Classical-Quantum (CQ) setting and the data we use for training is classic. This is done with a _feature map_, as can be seen in @fig-vqc. 
-
-![Variational Quantum Circuit @vqc_tut](./img/vqc.png){#fig-vqc}
+![Variational Quantum Circuit @vqc_tut](../img/vqc.png){#fig-vqc}
 
 ### Data encoding
+The state $\ket{\psi}$ must be obtained through an embedding since we're in a Classical-Quantum (CQ) setting and the data we use for training is classic. This is done with a _feature map_, as can be seen in @fig-vqc. 
+
 A quantum embedding represents classical data as quantum states in a Hilbert space via a quantum feature map. It takes a classical data $x$ and translates it into a set of gate parameters in a quantum circuit, creating a quantum state $\ket{\psi_x}$.
 
-In this project I use _angle embedding_ to encode classical data from dataset to the circuit (see line 10 in @fig-code_circuit). With angle embedding, single-qubit rotation gates encode a classical $x_i \in \mathcal{R}$. 
+In this project I use _angle embedding_ to encode classical data (audio statistics) to the circuit (see line 10 in @fig-code_circuit). With angle embedding, single-qubit rotation gates encode a classical $x_i \in \mathcal{R}$. 
 
 Each element of the input determines the angle of the rotation gate (e.g. an RY rotation gate). This approach requires $n$ qubits to encode $n$ input variables and can be defined as:
 $$
@@ -39,7 +41,7 @@ $$
 $$
 
 ### QCNNs
-QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalisation capabilities and absence of _barren plateaus_.
+QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalization capabilities and absence of _barren plateaus_.
 
 A _barren plateau_ happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes.
 For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits.
@@ -54,6 +56,7 @@ The next step is learning network architecture, which NAS aims to achieve @elske
 - performance estimation strategy
 
 The _search space_ defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.
+The main contribution of @lourens2023hierarchical is a framework that enables the dynamic generation of QCNN and the creation of QCNN search spaces: HierarQcal.
 
 ## HierarQcal
 
@@ -61,3 +64,5 @@ HierarQcal is an open-source python package @github_hierarqcal that simplifies t
 It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.
 
 The package includes primitives such as _convolutions, pooling_ and _dense layers_ that can be stacked together hierarchically to form complex QCNN circuit architectures.
+
+....
