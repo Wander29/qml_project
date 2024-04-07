@@ -1,6 +1,6 @@
 # Results
 
-I ran multiple test with various ansatzes, keep in mind @fig-conv_ansatzes and @fig-pool-ansatz for ansatzes naming.
+I ran multiple test with various ansatzes. For ansatzes naming keep in mind @fig-conv_ansatzes and @fig-pool-ansatz.
 
 ## Convolution ansatz (a)
 For convolution ansatz (a) and pooling ansatz (1) I obtained the following results:
@@ -43,7 +43,7 @@ While the best configuration with `share_weights=False` selected was:
 - `pooling filter`: *!
 - `pooling stride`: 2
 
-Measuring them with the test set I obtain:
+Measuring them with the test set I obtained:
 
 ```{python}
 #| echo: False
@@ -120,6 +120,77 @@ df = pd.DataFrame( {
 df
 ```
 
+
+Below there are the results with pooling ansatz (2). With `share_weights=False`:
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-29_03-20-47.csv")
+df = df.loc[ 
+  (df['param_model__ansatz_c'] == 'b') & 
+  (df['param_model__ansatz_p'] == 2) & 
+  (df['param_model__share_weights'] == False)
+]
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(10)
+```
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st"],
+  "accuracy":[0.7],
+  "parameters": [26]
+})
+df
+```
+
+Yet with pooling ansatz (2) but setting `share_weights=True`:
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-29_03-20-47.csv")
+df = df.loc[ 
+  (df['param_model__ansatz_c'] == 'b') & 
+  (df['param_model__ansatz_p'] == 2) & 
+  (df['param_model__share_weights'] == True)
+]
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(7)
+```
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st", "2nd", "3rd", "4th", "5th"],
+  "accuracy":[0.717, 0.733, 0.683, 0.6, 0.633],
+  "parameters": [6, 6, 6, 6, 6]
+})
+df
+```
+
+The second configuration appears to be the best minimal architecture.
+
 ## Convolution ansatz (g)
 For convolution ansatz (g) I decided to fix `share_weights=True` since the number of parameters would have grown from 30 to 130.
 
@@ -166,6 +237,38 @@ df = pd.DataFrame( {
 df
 ```
 
-I found these last two to be the most interesting architectures.
+I found these last two to be the most interesting architectures, in particular I'd choose the architecture with `share_weights=True` according to the principle of parsimony.
 
-<!--  add plot of loss function for best configurations -->
+Below there are also the less interesting results with pooling ansatz (2) (always with `share_weights=True`):
+```{python}
+#| echo: False
+import pandas as pd
+df = pd.read_csv("../../scripts/results/out_2024-03-29_03-20-47.csv")
+df = df.loc[ 
+  (df['param_model__ansatz_c'] == 'g') & 
+  (df['param_model__ansatz_p'] == 2) & 
+  (df['param_model__share_weights'] == True)
+]
+df.sort_values(by=['mean_test_score'], ascending=False, inplace=True)
+
+a = pd.concat( 
+    (
+      df["param_model__stride_c"], 
+      df["param_model__step_c"], 
+      df["param_model__filter_p"], 
+      df["param_model__stride_p"], 
+      df["mean_test_score"]) ,
+  axis=1)
+a.columns = ["Conv. stride", "Conv. step", "Pool. filter", "Pool. stride", "Mean validation score"]
+a.head(10)
+```
+
+```{python}
+#| echo: False
+df = pd.DataFrame( {
+  'configuration': ["1st", "2nd", "3rd", "4th"],
+  "accuracy":[0.733, 0.783, 0.733, 0.7],
+  "parameters": [30, 30, 30, 30]
+})
+df
+```

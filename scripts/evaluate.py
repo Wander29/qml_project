@@ -9,17 +9,17 @@ from single_model_train import U_ansatz_conv_a, U_ansatz_conv_g, U_ansatz_conv_b
 # ================================
 
 qcnn = single_model_train.qcnn_motif(
-  ansatz_c="b",
-  ansatz_p="1", 
-  conv_stride=7, conv_step=2, conv_offset=0, 
-  pool_filter="01", pool_stride=0, 
+  ansatz_c="g",
+  ansatz_p="2", 
+  conv_stride=7, conv_step=1, conv_offset=0, 
+  pool_filter="!*!", pool_stride=3, 
   share_weights=False
 )
 samples_preprocessed = data.data_load_and_process(["rock", "country"])
 
 print(f"# params: {qcnn.n_symbols}")
 
-symbols, loss, loss_history = single_model_train.train(samples_preprocessed.x_train, samples_preprocessed.y_train.values, qcnn)
+symbols, loss = single_model_train.train(samples_preprocessed.x_train, samples_preprocessed.y_train.values, qcnn)
 circuit = single_model_train.get_circuit(qcnn, samples_preprocessed.x_test)
 y_hat = circuit()
 acc = single_model_train.accuracy(y_hat,samples_preprocessed.y_test.values)

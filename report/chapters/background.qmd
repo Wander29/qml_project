@@ -38,7 +38,7 @@ CNN utilize a special type of layer, named a convolutional layer, that makes the
 Represents the input image into the CNN.
 
 #### Convolutional layers
-They contain the learned kernels (weights), which extract features that distinguish different images from one another. Each Link between the previous layers and the convolutional layers represents a unique kernel, which is used for the convolution operation to produce the current convolutional neuron’s output or activation map.
+They contain the learned kernels (weights), which extract features that distinguish different images from one another. Each link between the previous layers and the convolutional layers represents a unique kernel, which is used for the convolution operation to produce the current convolutional neuron’s output or activation map.
 
 The convolutional neuron performs an element-wise dot product with a unique kernel and the output of the previous layer’s corresponding neuron. The convolutional neuron is the result of all of the intermediate results summed together with the learned bias.
 
@@ -98,7 +98,7 @@ The *search space* defines the set of possible architectures that a search algor
 
 HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.
 
-The package includes primitives such as *convolutions, pooling* and *dense layers* that can be stacked together hierarchically to form complex QCNN circuit architectures.
+The package includes primitives such as *convolutions* and *pooling* that can be stacked together hierarchically to form complex QCNN circuit architectures.
 
 The package is open-source and framework-agnostic (it works with Qiskit, Pennylane and cirq).
 
@@ -108,17 +108,17 @@ There are two main classes to generate circuit architectures: `Qhierarchy` and `
 
 Circuit architectures are created by stacking motifs hierarchically, the lowest level motifs (primitives) are building blocks for higher level ones.
 
-All primitives are instances of `Qmotif`. A primitive is a directed graph with nodes representing qubits and edges unitaries applied between them. The edges are determined by its rules and the number of available qubits. 
+All primitives are instances of `Qmotif`. A primitive is a directed graph with nodes representing qubits and edges unitaries applied between them. The edges are determined by its rules and the number of available qubits.
 
-Primitives are stacked with addition or multiplication operations which act as append and extend, for example: `Qcycle() + Qpermute() = (Qcycle, Qpermute)` which is a `Qmotifs` object, a sequence of `Qmotif`. Simlarly `Qcycle()*3 = (Qcycle(), Qcycle(), Qcycle())` is again an instance of `Qmotifs`. 
+Primitives are stacked with addition or multiplication operations which act as append and extend, for example: `Qcycle() + Qpermute() = (Qcycle, Qpermute)` which is a `Qmotifs` object, a sequence of `Qmotif`. Simlarly `Qcycle()*3 = (Qcycle(), Qcycle(), Qcycle())` is again an instance of `Qmotifs`.
 
 It’s possible to add motifs together without specifying qubits. When the motif is ready it’s possible to initialize it with `Qinit` in the following way: `Qinit(8) + motif`. This creates a `Qhierarchy` object, which traverses all the motifs generating their edges.
 
-The types of primitves are:
+The types of primitives are:
 
   - `Qcycle`: creates a cycle of unitaries, also called *ladders* or *convolutions*. Its hyperparameters are used to generate cycles in directed graphs.
 
-  - `Qpermute`: permutes unitaries across qubits.
+  - `Qpermute`: permutes unitaries across qubits. It generates all combinations or permutations of edges based on the `combinations`(`True`/`False`) hyperparameter and arity of corresponding function.
 
   - `Qmask`: masks certain qubits based on a pattern, also referred to as *entanglers* or *pooling* layers. A mapping can be provided to save its information.
 
@@ -132,12 +132,85 @@ Each primitive has a mapping hyperparameter that expects a `Qunitary` object. `Q
 - `n_symbols`: number of symbols the function expects
 - `arity`: the number of qubits the function acts upon
 
+An example of function could be the pooling ansatz that will be used later:
 
-#TODO add some plots
+```{python}
+#| eval: False
+def ansatz_pool_1(bits, symbols=None):
+  qml.CRZ(symbols[0], wires=[bits[0], bits[1]])
+  qml.PauliX(wires=[bits[0]])
+  qml.CRX(symbols[1], wires=[bits[0], bits[1]])
+```
+
+A `Qunitary` can be created starting from this function: 
+
+```{python}
+#| eval: False
+
+U_ansatz_pool_1 = Qunitary(ansatz_pool_1, n_symbols=2, arity=2)
+```
+
+Once the architecture is ready, it is possible to specify the functions and execute it on a backend by calling `hierq(backend="qiskit")` where `hierq` is the `Qhierarchy` object containing the architecture (or more generally, the compute graph).
+
+#### Qcycle
+`Qcycle` has the following parameters:
+
+- `stride`: The number of nodes to skip, before connecting the edge
+
+- `step`: The number of nodes to step over after the edge was connected
+
+- `offset`: The node to start the procedure with
+
+- `boundary`: The boundary condition of the cycle, can be `open` or `periodic`
+
+An example with `stride=1`:
+
+```{python}
+#| eval: False
+
+cycle = Qcycle(stride=1, step=1,offset=0, mapping=u0_2)
+cycle = Qinit(8) + cycle
+plot_motif(cycle[1])
+plot_circuit(cycle)
+```
+
+![](../img/stride_1.png)
+
+and with `stride=2`:
+```{python}
+#| eval: False
+cycle = Qcycle(stride=2, step=1,offset=0, mapping=u0_2)
+```
+
+![](../img/stride_2.png)
+
+
+#### Qmask
+Masking qubits in this context implies rendering certain qubits temporarily unavailable for subsequent operations, which facilitates specialized architectures and computations. 
+The utility of associating a unitary operation is that it preserves the information of the masked qubits, usually through a controlled unitary operation.
+
+Its main parameter is `pooling_filter`. For 2-qubit unitaries there are predefined masking patterns: “right”, “left”, “inside”, “outside”, “even”, “odd” which halves the circuit size. 
+Alternatively, it is possible to provide a string such as `1*1` where ‘1’ signifies mask, ‘0’ signifies keeping the qubit active and ´*´ means to fill with 0’s based on the number of available qubits. So:
+
+- `left` is equal to `!*`
+- `right` is equal to `*!`
+- `inside` is equal to `*!*`
+
+`Qmask` has other parameters, such as `stride`.
+
+Below there is a visual example of a `Qmask` primitive with `inside` as pooling filter between 2 convolutions:
+
+```{python}
+#| eval: False
+
+mask = Qinit(8) + Qcycle(mapping=u0_2) + Qmask("inside") + Qcycle(mapping=u0_2)
+plot_circuit(mask)
+```
+![](../img/mask.png)
 
 ### Reverse binary trees{#sec-reverse-binary-trees}
 
-The idea behind *reverse binary tree architectures* is to reduce the system size in half until one qubit remains while alternating between convolution and pooling operations. Grant et al. \[5\] exhibited the success of hierarchical designs that resemble reverse binary trees. To create a space of these architectures, like the one on the right in @fig-reverse-binary-tree, only three levels of motifs are needed. 
+The idea behind *reverse binary tree architectures* is to reduce the system size in half until one qubit remains while alternating between convolution and pooling operations. Grant et al. @grant2018hierarchical exhibited the success of hierarchical designs that resemble reverse binary trees. To create a space of these architectures, like the one on the right in @fig-reverse-binary-tree, only three levels of motifs are needed. 
 
 ![Reverse binary tree in HierarQcal](../img/hierarchical_motifs.png){#fig-reverse-binary-tree}
 

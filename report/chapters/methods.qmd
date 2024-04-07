@@ -230,6 +230,6 @@ The hyperparameters I decided to look for were:
 - `pooling filter`: between { left, right, outside, inside, odd, even }
 - `pooling stride`: between [0,3]
 
-These are not the total parameters possibile (for example it is also possible to set an `offset` for convolution). I decided to put as maximum limit of training runs $\approx 1000$ (considering 3 runs for each configuration given the cross validation) which in practice was about 30 to 45 minutes on the test machine, leaving all the parameters searched also in @lourens2023hierarchical.
+These are not the total possibile parameters (for example it is also possible to set an `offset` for convolution). I decided to put as maximum limit of training runs $\approx 1000$ (considering 3 runs for each configuration given the cross validation) which in practice was about 30 to 45 minutes on my machine, looking for all the parameters searched also in @lourens2023hierarchical.
 
-`share_weights` is an interesting parameter because by disabling it is possible to gain some accuracy at the cost of adding a large number of parameters. For example for ansatz (a) we pass from 6 to 26 parameters to optimize.`
+`share_weights` is an interesting parameter because by disabling it is possible to gain some accuracy at the cost of adding a large number of parameters. For example for ansatz (a) we pass from 6 to 26 parameters to optimize.

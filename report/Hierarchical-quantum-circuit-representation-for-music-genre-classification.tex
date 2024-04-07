@@ -308,12 +308,111 @@ H(P,Q) = - \sum_{x \in X} P(x) \cdot ln(Q(x))
 \section{Convolutional Neural
 Networks}\label{convolutional-neural-networks}
 
+A CNN is a neural network: an algorithm used to recognize patterns in
+data. Neural Networks in general are composed of a collection of neurons
+that are organized in layers, each with their own learnable weights and
+biases.
+
+CNN were inspired by biological processes in that the connectivity
+pattern between neurons resembles the organization of the animal visual
+cortex. Individual cortical neurons respond to stimuli only in a
+restricted region of the visual field known as the receptive field. The
+receptive fields of different neurons partially overlap such that they
+cover the entire visual field.
+
 Convolutional Neural Networks (CNN) are successful because they don't
 need manual feature design and can learn high-level features from raw
 data. With CNN there is a focus shift: from feature design to
 architecture design.
 
-\ldots.
+The building blocks of CNN are:
+
+\begin{itemize}
+\tightlist
+\item
+  tensor: can be thought of as an n-dimensional matrix.
+\item
+  neuron: a function that takes in multiple inputs and yields a single
+  output.
+\item
+  layer: collection of neurons with the same operation, including the
+  same hyperparameters.
+\item
+  kernel weights and biases: are tuned during the training phase, and
+  allow the classifier to adapt to the problem and dataset provided,
+  they are unique to each neuron.
+\item
+  activation function: such as ReLU
+\end{itemize}
+
+CNN utilize a special type of layer, named a convolutional layer, that
+makes them well-positioned to learn from image and image-like data.
+Regarding image data, CNNs can be used for many different computer
+vision tasks, such as image processing, classification, segmentation,
+and object detection.
+
+\subsection{Layers}\label{layers}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{chapters/../img/cnn.png}
+
+}
+
+\caption{\label{fig-cnn}CNN general architecture}
+
+\end{figure}%
+
+\subsubsection{Input layer}\label{input-layer}
+
+Represents the input image into the CNN.
+
+\subsubsection{Convolutional layers}\label{convolutional-layers}
+
+They contain the learned kernels (weights), which extract features that
+distinguish different images from one another. Each link between the
+previous layers and the convolutional layers represents a unique kernel,
+which is used for the convolution operation to produce the current
+convolutional neuron's output or activation map.
+
+The convolutional neuron performs an element-wise dot product with a
+unique kernel and the output of the previous layer's corresponding
+neuron. The convolutional neuron is the result of all of the
+intermediate results summed together with the learned bias.
+
+\subsubsection{Pooling layers}\label{pooling-layers}
+
+They have the purpose of gradually decreasing the spatial extent of the
+network, which reduces the parameters and overall computation of the
+network
+
+\subsubsection{Hyper-parameters}\label{hyper-parameters}
+
+The size of the kernels is a hyper-parameter specified by the designers
+of the network architecture. Also the connectivity between the
+convolutional layer and the previous layer is a design decision when
+building a network architecture, which will affect the number of kernels
+per convolutional layer.
+
+\begin{itemize}
+\item
+  \textbf{Padding}: conserves data at the borders of activation maps.
+  There exist many padding techniques, but the most commonly used
+  approach is zero-padding because of its performance, simplicity, and
+  computational efficiency. The technique involves adding zeros
+  symmetrically around the edges of an input.
+\item
+  \textbf{Kernel size}: also referred to as \emph{filter size}, refers
+  to the dimensions of the sliding window over the input. A smaller
+  kernel size also leads to a smaller reduction in layer dimensions,
+  which allows for a deeper architecture.
+\item
+  \textbf{Stride}: how many pixels the kernel should be shifted over at
+  a time. As stride is decreased, more features are learned because more
+  data is extracted, which also leads to larger output layers.
+\end{itemize}
 
 \section{Quantum Machine Learning}\label{quantum-machine-learning}
 
@@ -323,8 +422,9 @@ parameters is done classically and the function \(f_m\) is built as a
 Variational Quantum Circuit (VQC) that acts on a quantum state
 \(\ket{\psi}\).
 
-A VQC is a quantum circuit with trainable parameters in some gates, as a
-rotation angle \(\theta, e.g. RY(\theta)\).
+A VQC is a quantum circuit built with at least one gate having trainable
+parameters, for example a RY(\(\theta\)) rotation where the rotation
+angle \(\theta\) is the trainable parameter.
 
 The point in using a VQC is that the state can move along all Hilbert
 space at every change of the parameters, so it is possible to sample
@@ -345,10 +445,10 @@ from a classically intractable probability density function (pdf).
 
 \subsection{Data encoding}\label{data-encoding}
 
-The state \(\ket{\psi}\) must be obtained through an embedding since
-we're in a Classical-Quantum (CQ) setting and the data we use for
-training is classic. This is done with a \emph{feature map}, as can be
-seen in Figure~\ref{fig-vqc}.
+The state \(\ket{\psi}\) is obtained through an embedding since we're in
+a Classical-Quantum (CQ) setting and the data we use for training is
+classic. This is done with a \emph{feature map}, as can be seen in
+Figure~\ref{fig-vqc}.
 
 A quantum embedding represents classical data as quantum states in a
 Hilbert space via a quantum feature map. It takes a classical data \(x\)
@@ -366,7 +466,8 @@ encode \(n\) input variables and can be defined as: \[
 \ket{\psi_x} = \bigotimes_{i=1}^n cos(x_i) \ket{0} + sin(x_i)\ket{1} = \bigotimes_{i=1}^n R(x_i)\ket{\psi_0}
 \]
 
-\subsection{QCNNs}\label{qcnns}
+\subsection{Quantum Convolutional Neural
+Networks}\label{quantum-convolutional-neural-networks}
 
 QCNN stands out among other parametrized quantum circuits (PQC) models
 for its shallow circuit depth, good generalization capabilities and
@@ -405,9 +506,9 @@ components:
 The \emph{search space} defines the set of possible architectures that a
 search algorithm can consider, and a carefully designed search space is
 important for search efficiency. The main contribution of
-{[}\citeproc{ref-lourens2023hierarchical}{1}{]} is a framework that
-enables the dynamic generation of QCNN and the creation of QCNN search
-spaces: HierarQcal.
+{[}\citeproc{ref-lourens2023hierarchical}{1}{]} is a framework
+(HierarQcal) that enables the dynamic generation of QCNN and the
+creation of QCNN search spaces.
 
 \section{HierarQcal}\label{hierarqcal}
 
@@ -417,11 +518,210 @@ creating general QCNN by enabling an hierarchical design process. It
 makes automatic generation of QCNN circuits easy and it facilitates QCNN
 search space design for NAS.
 
-The package includes primitives such as \emph{convolutions, pooling} and
-\emph{dense layers} that can be stacked together hierarchically to form
+The package includes primitives such as \emph{convolutions} and
+\emph{pooling} that can be stacked together hierarchically to form
 complex QCNN circuit architectures.
 
-\ldots.
+The package is open-source and framework-agnostic (it works with Qiskit,
+Pennylane and cirq).
+
+There are two main classes to generate circuit architectures:
+\texttt{Qhierarchy} and \texttt{Qmotif}.
+
+\subsection{Primitives}\label{primitives}
+
+Circuit architectures are created by stacking motifs hierarchically, the
+lowest level motifs (primitives) are building blocks for higher level
+ones.
+
+All primitives are instances of \texttt{Qmotif}. A primitive is a
+directed graph with nodes representing qubits and edges unitaries
+applied between them. The edges are determined by its rules and the
+number of available qubits.
+
+Primitives are stacked with addition or multiplication operations which
+act as append and extend, for example:
+\texttt{Qcycle()\ +\ Qpermute()\ =\ (Qcycle,\ Qpermute)} which is a
+\texttt{Qmotifs} object, a sequence of \texttt{Qmotif}. Simlarly
+\texttt{Qcycle()*3\ =\ (Qcycle(),\ Qcycle(),\ Qcycle())} is again an
+instance of \texttt{Qmotifs}.
+
+It's possible to add motifs together without specifying qubits. When the
+motif is ready it's possible to initialize it with \texttt{Qinit} in the
+following way: \texttt{Qinit(8)\ +\ motif}. This creates a
+\texttt{Qhierarchy} object, which traverses all the motifs generating
+their edges.
+
+The types of primitives are:
+
+\begin{itemize}
+\item
+  \texttt{Qcycle}: creates a cycle of unitaries, also called
+  \emph{ladders} or \emph{convolutions}. Its hyperparameters are used to
+  generate cycles in directed graphs.
+\item
+  \texttt{Qpermute}: permutes unitaries across qubits. It generates all
+  combinations or permutations of edges based on the
+  \texttt{combinations}(\texttt{True}/\texttt{False}) hyperparameter and
+  arity of corresponding function.
+\item
+  \texttt{Qmask}: masks certain qubits based on a pattern, also referred
+  to as \emph{entanglers} or \emph{pooling} layers. A mapping can be
+  provided to save its information.
+\item
+  \texttt{Qunmask}: unmasks previously masked unitaries.
+\item
+  \texttt{Qinit}: specifies the qubit names, order and amount.
+\end{itemize}
+
+Each primitive has a mapping hyperparameter that expects a
+\texttt{Qunitary} object. \texttt{Qunitary} has the following parameters
+(which are the information that tells to a primitive):
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{function}: function that gets executed at every edge
+\item
+  \texttt{n\_symbols}: number of symbols the function expects
+\item
+  \texttt{arity}: the number of qubits the function acts upon
+\end{itemize}
+
+An example of function could be the pooling ansatz that will be used
+later:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ ansatz\_pool\_1(bits, symbols}\OperatorTok{=}\VariableTok{None}\NormalTok{):}
+\NormalTok{  qml.CRZ(symbols[}\DecValTok{0}\NormalTok{], wires}\OperatorTok{=}\NormalTok{[bits[}\DecValTok{0}\NormalTok{], bits[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{  qml.PauliX(wires}\OperatorTok{=}\NormalTok{[bits[}\DecValTok{0}\NormalTok{]])}
+\NormalTok{  qml.CRX(symbols[}\DecValTok{1}\NormalTok{], wires}\OperatorTok{=}\NormalTok{[bits[}\DecValTok{0}\NormalTok{], bits[}\DecValTok{1}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+A \texttt{Qunitary} can be created starting from this function:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{U\_ansatz\_pool\_1 }\OperatorTok{=}\NormalTok{ Qunitary(ansatz\_pool\_1, n\_symbols}\OperatorTok{=}\DecValTok{2}\NormalTok{, arity}\OperatorTok{=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Once the architecture is ready, it is possible to specify the functions
+and execute it on a backend by calling \texttt{hierq(backend="qiskit")}
+where \texttt{hierq} is the \texttt{Qhierarchy} object containing the
+architecture (or more generally, the compute graph).
+
+\subsubsection{Qcycle}\label{qcycle}
+
+\texttt{Qcycle} has the following parameters:
+
+\begin{itemize}
+\item
+  \texttt{stride}: The number of nodes to skip, before connecting the
+  edge
+\item
+  \texttt{step}: The number of nodes to step over after the edge was
+  connected
+\item
+  \texttt{offset}: The node to start the procedure with
+\item
+  \texttt{boundary}: The boundary condition of the cycle, can be
+  \texttt{open} or \texttt{periodic}
+\end{itemize}
+
+An example with \texttt{stride=1}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cycle }\OperatorTok{=}\NormalTok{ Qcycle(stride}\OperatorTok{=}\DecValTok{1}\NormalTok{, step}\OperatorTok{=}\DecValTok{1}\NormalTok{,offset}\OperatorTok{=}\DecValTok{0}\NormalTok{, mapping}\OperatorTok{=}\NormalTok{u0\_2)}
+\NormalTok{cycle }\OperatorTok{=}\NormalTok{ Qinit(}\DecValTok{8}\NormalTok{) }\OperatorTok{+}\NormalTok{ cycle}
+\NormalTok{plot\_motif(cycle[}\DecValTok{1}\NormalTok{])}
+\NormalTok{plot\_circuit(cycle)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapters/../img/stride_1.png}
+
+and with \texttt{stride=2}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cycle }\OperatorTok{=}\NormalTok{ Qcycle(stride}\OperatorTok{=}\DecValTok{2}\NormalTok{, step}\OperatorTok{=}\DecValTok{1}\NormalTok{,offset}\OperatorTok{=}\DecValTok{0}\NormalTok{, mapping}\OperatorTok{=}\NormalTok{u0\_2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapters/../img/stride_2.png}
+
+\subsubsection{Qmask}\label{qmask}
+
+Masking qubits in this context implies rendering certain qubits
+temporarily unavailable for subsequent operations, which facilitates
+specialized architectures and computations. The utility of associating a
+unitary operation is that it preserves the information of the masked
+qubits, usually through a controlled unitary operation.
+
+Its main parameter is \texttt{pooling\_filter}. For 2-qubit unitaries
+there are predefined masking patterns: ``right'', ``left'', ``inside'',
+``outside'', ``even'', ``odd'' which halves the circuit size.
+Alternatively, it is possible to provide a string such as \texttt{1*1}
+where `1' signifies mask, `0' signifies keeping the qubit active and ´*´
+means to fill with 0's based on the number of available qubits. So:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{left} is equal to \texttt{!*}
+\item
+  \texttt{right} is equal to \texttt{*!}
+\item
+  \texttt{inside} is equal to \texttt{*!*}
+\end{itemize}
+
+\texttt{Qmask} has other parameters, such as \texttt{stride}.
+
+Below there is a visual example of a \texttt{Qmask} primitive with
+\texttt{inside} as pooling filter between 2 convolutions:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mask }\OperatorTok{=}\NormalTok{ Qinit(}\DecValTok{8}\NormalTok{) }\OperatorTok{+}\NormalTok{ Qcycle(mapping}\OperatorTok{=}\NormalTok{u0\_2) }\OperatorTok{+}\NormalTok{ Qmask(}\StringTok{"inside"}\NormalTok{) }\OperatorTok{+}\NormalTok{ Qcycle(mapping}\OperatorTok{=}\NormalTok{u0\_2)}
+\NormalTok{plot\_circuit(mask)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{chapters/../img/mask.png}
+
+\subsection{Reverse binary trees}\label{sec-reverse-binary-trees}
+
+The idea behind \emph{reverse binary tree architectures} is to reduce
+the system size in half until one qubit remains while alternating
+between convolution and pooling operations. Grant et al.
+{[}\citeproc{ref-grant2018hierarchical}{7}{]} exhibited the success of
+hierarchical designs that resemble reverse binary trees. To create a
+space of these architectures, like the one on the right in
+Figure~\ref{fig-reverse-binary-tree}, only three levels of motifs are
+needed.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{chapters/../img/hierarchical_motifs.png}
+
+}
+
+\caption{\label{fig-reverse-binary-tree}Reverse binary tree in
+HierarQcal}
+
+\end{figure}%
+
+\texttt{Qcycle(1)} and \texttt{Qmask("right")} are both primitives.
+Alternating between them (\texttt{m\ =\ Qcycle(1)\ +\ Qmask("right")})
+is a level two motif, then repeating that 3 times (\texttt{m*3}) is a
+level 3 motif. This gives a concise description of the circuit on the
+right.
 
 \bookmarksetup{startatroot}
 
@@ -430,7 +730,7 @@ complex QCNN circuit architectures.
 \section{Dataset}\label{dataset}
 
 The GTZAN dataset
-{[}\citeproc{ref-gtzan_tzanetakis_essl_cook_2001}{7}{]} is the most-used
+{[}\citeproc{ref-gtzan_tzanetakis_essl_cook_2001}{8}{]} is the most-used
 public dataset for evaluation in machine listening research for music
 genre recognition (MGR). The files were collected in 2000-2001 from a
 variety of sources including personal CDs, radio, microphone recordings,
@@ -442,11 +742,11 @@ contains 10 genres, each represented by 100 tracks. The tracks are all
 blues,classical, country, disco, hiphop, jazz, metal, pop, reggae, rock.
 
 I used the GTZAN dataset from Kaggle
-{[}\citeproc{ref-GTZAN_kaggle}{8}{]}, which already include statistics
+{[}\citeproc{ref-GTZAN_kaggle}{9}{]}, which already include statistics
 extracted from the audio sources. The information gathered from audio
 signals to produce the tabular dataset can be easily extracted with
 \texttt{librosa} \footnote{a Python package for audio and music signal
-  processing {[}\citeproc{ref-mcfee2015librosa}{9}{]}} and contains:
+  processing {[}\citeproc{ref-mcfee2015librosa}{10}{]}} and contains:
 Chroma frequencies, Harmonic and percussive elements, Mel-frequency
 cepstral coefficients, Spectral bandwidth and others. For a description
 of these and other features see Appendix D of
@@ -497,12 +797,8 @@ be discussed in Section~\ref{sec-hyp_search}).
 Each row of the data resulting from the preprocessing has 8 features and
 so it can be encoded through an angle embedding into a quantum circuit
 with 8 qubit. The quantum circuit used here is a QCNN with a
-hierarchical design: the idea is to reduce the system size in half until
-one qubit remains while alternating between convolution and pooling
-operations. Grant et al. {[}\citeproc{ref-grant2018hierarchical}{10}{]}
-exhibited the success of hierarchical designs that resemble reverse
-binary trees. To create a space of these architectures only three levels
-of motifs are needed.
+hierarchical design that resemble reverse binary trees (see
+Section~\ref{sec-reverse-binary-trees}).
 
 \begin{figure}[H]
 
@@ -651,8 +947,8 @@ model I used in this project.
 \end{Shaded}
 
 The motif obtained from \texttt{qcnn\_motif} is not ready to be
-executed. It needs to be translated to a pennylane circuit and also the
-input \(x \in \mathcal{R}^8\) must be embedded into this circuit.
+executed. It needs to be translated into a pennylane circuit and also
+the input \(x \in \mathcal{R}^8\) must be embedded into this circuit.
 
 \begin{figure}
 
@@ -813,25 +1109,24 @@ The hyperparameters I decided to look for were:
   \texttt{pooling\ stride}: between {[}0,3{]}
 \end{itemize}
 
-These are not the total parameters possibile (for example it is also
+These are not the total possibile parameters (for example it is also
 possible to set an \texttt{offset} for convolution). I decided to put as
 maximum limit of training runs \(\approx 1000\) (considering 3 runs for
 each configuration given the cross validation) which in practice was
-about 30 to 45 minutes on the test machine, leaving all the parameters
+about 30 to 45 minutes on my machine, looking for all the parameters
 searched also in {[}\citeproc{ref-lourens2023hierarchical}{1}{]}.
 
 \texttt{share\_weights} is an interesting parameter because by disabling
 it is possible to gain some accuracy at the cost of adding a large
 number of parameters. For example for ansatz (a) we pass from 6 to 26
-parameters to optimize.`
+parameters to optimize.
 
 \bookmarksetup{startatroot}
 
 \chapter{Results}\label{results}
 
-I ran multiple test with various ansatzes, keep in mind
-Figure~\ref{fig-conv_ansatzes} and Figure~\ref{fig-pool-ansatz} for
-ansatzes naming.
+I ran multiple test with various ansatzes. For ansatzes naming keep in
+mind Figure~\ref{fig-conv_ansatzes} and Figure~\ref{fig-pool-ansatz}.
 
 \section{Convolution ansatz (a)}\label{convolution-ansatz-a}
 
@@ -894,7 +1189,7 @@ was:
   \texttt{pooling\ stride}: 2
 \end{itemize}
 
-Measuring them with the test set I obtain:
+Measuring them with the test set I obtained:
 
 \begin{longtable}[]{@{}llll@{}}
 \toprule\noalign{}
@@ -973,6 +1268,74 @@ validation score \\
 1 & 2nd & 0.750 & 20 \\
 \end{longtable}
 
+Below there are the results with pooling ansatz (2). With
+\texttt{share\_weights=False}:
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& Conv. stride & Conv. step & Pool. filter & Pool. stride & Mean
+validation score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1185 & 3 & 1 & 01 & 1 & 0.714770 \\
+740 & 4 & 1 & !* & 0 & 0.707678 \\
+1192 & 5 & 1 & 01 & 0 & 0.707678 \\
+774 & 5 & 2 & !* & 2 & 0.707678 \\
+873 & 2 & 2 & *! & 1 & 0.693494 \\
+1335 & 5 & 2 & 10 & 3 & 0.693494 \\
+996 & 5 & 2 & !*! & 0 & 0.693494 \\
+970 & 5 & 1 & !*! & 2 & 0.693494 \\
+751 & 6 & 1 & !* & 3 & 0.686401 \\
+1187 & 3 & 1 & 01 & 3 & 0.686401 \\
+\end{longtable}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& configuration & accuracy & parameters \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1st & 0.7 & 26 \\
+\end{longtable}
+
+Yet with pooling ansatz (2) but setting \texttt{share\_weights=True}:
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& Conv. stride & Conv. step & Pool. filter & Pool. stride & Mean
+validation score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+917 & 6 & 1 & !*! & 1 & 0.714770 \\
+904 & 3 & 1 & !*! & 0 & 0.714770 \\
+1160 & 4 & 2 & 01 & 0 & 0.714770 \\
+1173 & 7 & 2 & 01 & 1 & 0.714770 \\
+1023 & 4 & 1 & *!* & 3 & 0.714770 \\
+907 & 3 & 1 & !*! & 3 & 0.707678 \\
+800 & 5 & 1 & *! & 0 & 0.707678 \\
+\end{longtable}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& configuration & accuracy & parameters \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1st & 0.717 & 6 \\
+1 & 2nd & 0.733 & 6 \\
+2 & 3rd & 0.683 & 6 \\
+3 & 4th & 0.600 & 6 \\
+4 & 5th & 0.633 & 6 \\
+\end{longtable}
+
+The second configuration appears to be the best minimal architecture.
+
 \section{Convolution ansatz (g)}\label{convolution-ansatz-g}
 
 For convolution ansatz (g) I decided to fix \texttt{share\_weights=True}
@@ -1025,7 +1388,45 @@ configuration and this is the result I obtained on the test set:
 1 & True & 0.867 & 36 \\
 \end{longtable}
 
-I found these last two to be the most interesting architectures.
+I found these last two to be the most interesting architectures, in
+particular I'd choose the architecture with \texttt{share\_weights=True}
+according to the principle of parsimony.
+
+Below there are also the less interesting results with pooling ansatz
+(2) (always with \texttt{share\_weights=True}):
+
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+& Conv. stride & Conv. step & Pool. filter & Pool. stride & Mean
+validation score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2628 & 7 & 2 & 10 & 0 & 0.714770 \\
+2465 & 1 & 1 & 01 & 1 & 0.714770 \\
+2587 & 3 & 1 & 10 & 3 & 0.714770 \\
+2060 & 5 & 2 & !* & 0 & 0.714770 \\
+2265 & 7 & 1 & !*! & 1 & 0.707678 \\
+2048 & 2 & 2 & !* & 0 & 0.707678 \\
+2470 & 2 & 1 & 01 & 2 & 0.707678 \\
+2402 & 6 & 2 & *!* & 2 & 0.707678 \\
+2017 & 1 & 1 & !* & 1 & 0.707678 \\
+2518 & 7 & 2 & 01 & 2 & 0.707678 \\
+\end{longtable}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& configuration & accuracy & parameters \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0 & 1st & 0.733 & 30 \\
+1 & 2nd & 0.783 & 30 \\
+2 & 3rd & 0.733 & 30 \\
+3 & 4th & 0.700 & 30 \\
+\end{longtable}
 
 \bookmarksetup{startatroot}
 
@@ -1077,33 +1478,33 @@ of Barren Plateaus in Quantum Convolutional Neural Networks}}.
 \href{https://github.com/matt-lourens/hierarqcal?tab=readme-ov-file}{{hierarqcal}}.
 \emph{GitHub}.}
 
-\bibitem[\citeproctext]{ref-gtzan_tzanetakis_essl_cook_2001}
+\bibitem[\citeproctext]{ref-grant2018hierarchical}
 \CSLLeftMargin{{[}7{]} }%
+\CSLRightInline{\textsc{Grant}, E., \textsc{Benedetti}, M.,
+\textsc{Cao}, S., \textsc{Hallam}, A., \textsc{Lockhart}, J.,
+\textsc{Stojevic}, V., \textsc{Green}, A. G. and \textsc{Severini}, S.
+(2018). Hierarchical quantum classifiers. \emph{npj Quantum Information}
+\textbf{4} 65.}
+
+\bibitem[\citeproctext]{ref-gtzan_tzanetakis_essl_cook_2001}
+\CSLLeftMargin{{[}8{]} }%
 \CSLRightInline{\textsc{Tzanetakis}, G., \textsc{Essl}, G. and
 \textsc{Cook}, P. (2001).
 \href{http://ismir2001.ismir.net/pdf/tzanetakis.pdf}{Automatic musical
 genre classification of audio signals}.}
 
 \bibitem[\citeproctext]{ref-GTZAN_kaggle}
-\CSLLeftMargin{{[}8{]} }%
+\CSLLeftMargin{{[}9{]} }%
 \CSLRightInline{\textsc{Anon}.
 \href{https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification?resource=download}{{GTZAN
 Dataset - Music Genre Classification}}.}
 
 \bibitem[\citeproctext]{ref-mcfee2015librosa}
-\CSLLeftMargin{{[}9{]} }%
+\CSLLeftMargin{{[}10{]} }%
 \CSLRightInline{\textsc{McFee}, B., \textsc{Raffel}, C., \textsc{Liang},
 D., \textsc{Ellis}, D. P., \textsc{McVicar}, M., \textsc{Battenberg}, E.
 and \textsc{Nieto}, O. (2015). Librosa: Audio and music signal analysis
 in python. In \emph{SciPy} pp 18--24.}
-
-\bibitem[\citeproctext]{ref-grant2018hierarchical}
-\CSLLeftMargin{{[}10{]} }%
-\CSLRightInline{\textsc{Grant}, E., \textsc{Benedetti}, M.,
-\textsc{Cao}, S., \textsc{Hallam}, A., \textsc{Lockhart}, J.,
-\textsc{Stojevic}, V., \textsc{Green}, A. G. and \textsc{Severini}, S.
-(2018). Hierarchical quantum classifiers. \emph{npj Quantum Information}
-\textbf{4} 65.}
 
 \bibitem[\citeproctext]{ref-Hur2022Jun}
 \CSLLeftMargin{{[}11{]} }%
