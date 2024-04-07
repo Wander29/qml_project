@@ -1,68 +1,146 @@
 # Background
 
 ## Supervised Learning for classification
-The goal of classification is to use some data $X$ alongside a function $f_m$ (model) to accurately represent a discrete categorization $y$: 
-$$
+
+The goal of classification is to use some data $X$ alongside a function $f_m$ (model) to accurately represent a discrete categorization $y$: $$
 f_m(X, \theta) = \widehat{y} \approx y
-$$ 
+$$
 
 The data is used by iteratively changing the model parameters $\theta$ based on the disparity between the current representation $\widehat{y}$ and the actual categorization $y$, measured with a cost function $C(y, \widehat{y})$. It's a supervised problem because the label of each input is known from the start.
 
-The cost function I use in this project is Binary Cross Entropy (BCE) from `torch.nn.BCELoss`. Cross-entropy is a measure of the difference between two probability distributions for a given random variable or set of events. In other words, if we consider a target probability distribution $P$ and an approximation of the target distribution $Q$, then the cross-entropy of $Q$ from $P$ is the number of additional bits to represent an event using $Q$ instead of $P$:
-$$
+The cost function I use in this project is Binary Cross Entropy (BCE) from `torch.nn.BCELoss`. Cross-entropy is a measure of the difference between two probability distributions for a given random variable or set of events. In other words, if we consider a target probability distribution $P$ and an approximation of the target distribution $Q$, then the cross-entropy of $Q$ from $P$ is the number of additional bits to represent an event using $Q$ instead of $P$: $$
 H(P,Q) = - \sum_{x \in X} P(x) \cdot ln(Q(x))
 $$
 
 ## Convolutional Neural Networks
 
+A CNN is a neural network: an algorithm used to recognize patterns in data. Neural Networks in general are composed of a collection of neurons that are organized in layers, each with their own learnable weights and biases.
+
+CNN were inspired by biological processes in that the connectivity pattern between neurons resembles the organization of the animal visual cortex. Individual cortical neurons respond to stimuli only in a restricted region of the visual field known as the receptive field. The receptive fields of different neurons partially overlap such that they cover the entire visual field.
+
 Convolutional Neural Networks (CNN) are successful because they don't need manual feature design and can learn high-level features from raw data. With CNN there is a focus shift: from feature design to architecture design.
 
-....
+The building blocks of CNN are:
+
+- tensor: can be thought of as an n-dimensional matrix.
+- neuron: a function that takes in multiple inputs and yields a single output. 
+- layer: collection of neurons with the same operation, including the same hyperparameters.
+- kernel weights and biases: are tuned during the training phase, and allow the classifier to adapt to the problem and dataset provided, they are unique to each neuron.
+- activation function: such as ReLU
+
+CNN utilize a special type of layer, named a convolutional layer, that makes them well-positioned to learn from image and image-like data. Regarding image data, CNNs can be used for many different computer vision tasks, such as image processing, classification, segmentation, and object detection.
+
+### Layers
+
+![CNN general architecture](../img/cnn.png){#fig-cnn}
+
+#### Input layer 
+Represents the input image into the CNN.
+
+#### Convolutional layers
+They contain the learned kernels (weights), which extract features that distinguish different images from one another. Each Link between the previous layers and the convolutional layers represents a unique kernel, which is used for the convolution operation to produce the current convolutional neuron’s output or activation map.
+
+The convolutional neuron performs an element-wise dot product with a unique kernel and the output of the previous layer’s corresponding neuron. The convolutional neuron is the result of all of the intermediate results summed together with the learned bias.
+
+#### Pooling layers
+They have the purpose of gradually decreasing the spatial extent of the network, which reduces the parameters and overall computation of the network
+
+#### Hyper-parameters
+
+The size of the kernels is a hyper-parameter specified by the designers of the network architecture. Also the connectivity between the convolutional layer and the previous layer is a design decision when building a network architecture, which will affect the number of kernels per convolutional layer.
+
+- **Padding**: conserves data at the borders of activation maps. There exist many padding techniques, but the most commonly used approach is zero-padding because of its performance, simplicity, and computational efficiency. The technique involves adding zeros symmetrically around the edges of an input.
+
+- **Kernel size**: also referred to as *filter size*, refers to the dimensions of the sliding window over the input. A smaller kernel size also leads to a smaller reduction in layer dimensions, which allows for a deeper architecture. 
+
+- **Stride**: how many pixels the kernel should be shifted over at a time. As stride is decreased, more features are learned because more data is extracted, which also leads to larger output layers.
+
 
 ## Quantum Machine Learning
+
 Using quantum computers it is possible to write hybrid quantum-classical algorithms already usable in the NISQ era, where the optimization of parameters is done classically and the function $f_m$ is built as a Variational Quantum Circuit (VQC) that acts on a quantum state $\ket{\psi}$.
 
-A VQC is a quantum circuit with trainable parameters in some gates, as a rotation angle $\theta, e.g. RY(\theta)$.
+A VQC is a quantum circuit built with at least one gate having trainable parameters, for example a RY($\theta$) rotation where the rotation angle $\theta$ is the trainable parameter.
 
 The point in using a VQC is that the state can move along all Hilbert space at every change of the parameters, so it is possible to sample from a classically intractable probability density function (pdf).
 
 ![Variational Quantum Circuit @vqc_tut](../img/vqc.png){#fig-vqc}
 
 ### Data encoding
-The state $\ket{\psi}$ must be obtained through an embedding since we're in a Classical-Quantum (CQ) setting and the data we use for training is classic. This is done with a _feature map_, as can be seen in @fig-vqc. 
+
+The state $\ket{\psi}$ is obtained through an embedding since we're in a Classical-Quantum (CQ) setting and the data we use for training is classic. This is done with a *feature map*, as can be seen in @fig-vqc.
 
 A quantum embedding represents classical data as quantum states in a Hilbert space via a quantum feature map. It takes a classical data $x$ and translates it into a set of gate parameters in a quantum circuit, creating a quantum state $\ket{\psi_x}$.
 
-In this project I use _angle embedding_ to encode classical data (audio statistics) to the circuit (see line 10 in @fig-code_circuit). With angle embedding, single-qubit rotation gates encode a classical $x_i \in \mathcal{R}$. 
+In this project I use *angle embedding* to encode classical data (audio statistics) to the circuit (see line 10 in @fig-code_circuit). With angle embedding, single-qubit rotation gates encode a classical $x_i \in \mathcal{R}$.
 
-Each element of the input determines the angle of the rotation gate (e.g. an RY rotation gate). This approach requires $n$ qubits to encode $n$ input variables and can be defined as:
-$$
+Each element of the input determines the angle of the rotation gate (e.g. an RY rotation gate). This approach requires $n$ qubits to encode $n$ input variables and can be defined as: $$
 \ket{\psi_x} = \bigotimes_{i=1}^n cos(x_i) \ket{0} + sin(x_i)\ket{1} = \bigotimes_{i=1}^n R(x_i)\ket{\psi_0}
 $$
 
-### QCNNs
-QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalization capabilities and absence of _barren plateaus_.
+### Quantum Convolutional Neural Networks
 
-A _barren plateau_ happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes.
-For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits.
+QCNN stands out among other parametrized quantum circuits (PQC) models for its shallow circuit depth, good generalization capabilities and absence of *barren plateaus*.
 
-It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov.
-For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit _barren plateaus_.
+A *barren plateau* happens when the gradient of a cost function vanishes exponentially with system size, rendering the architecture untrainable for large problem sizes. For PQC, random circuits are often proposed as initial guesses for exploring the space of quantum states, due to exponential dimension of Hilbert space and the gradient estimation complexity on more than a few qubits.
+
+It is important to note that for a wide class of PQC the probability that the gradient along any reasonable direction is non-zero to some fixed precision is exponentially small as a function of the number of qubits @McClean2018Nov. For QCNN in particular it is guaranteed that randomly initialized QCNN are trainable unlike many other PQC architectures, since the variance of the gradient vanishes no faster than polynomially @Pesah2021Oct so QCNNs do not exhibit *barren plateaus*.
 
 The next step is learning network architecture, which NAS aims to achieve @elsken2019neural. NAS consists of 3 main components:
 
-- search space
-- search strategy
-- performance estimation strategy
+-   search space
+-   search strategy
+-   performance estimation strategy
 
-The _search space_ defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency.
-The main contribution of @lourens2023hierarchical is a framework that enables the dynamic generation of QCNN and the creation of QCNN search spaces: HierarQcal.
+The *search space* defines the set of possible architectures that a search algorithm can consider, and a carefully designed search space is important for search efficiency. The main contribution of @lourens2023hierarchical is a framework (HierarQcal) that enables the dynamic generation of QCNN and the creation of QCNN search spaces.
 
 ## HierarQcal
 
-HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. 
-It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.
+HierarQcal is an open-source python package @github_hierarqcal that simplifies the process of creating general QCNN by enabling an hierarchical design process. It makes automatic generation of QCNN circuits easy and it facilitates QCNN search space design for NAS.
 
-The package includes primitives such as _convolutions, pooling_ and _dense layers_ that can be stacked together hierarchically to form complex QCNN circuit architectures.
+The package includes primitives such as *convolutions, pooling* and *dense layers* that can be stacked together hierarchically to form complex QCNN circuit architectures.
 
-....
+The package is open-source and framework-agnostic (it works with Qiskit, Pennylane and cirq).
+
+There are two main classes to generate circuit architectures: `Qhierarchy` and `Qmotif`.
+
+### Primitives
+
+Circuit architectures are created by stacking motifs hierarchically, the lowest level motifs (primitives) are building blocks for higher level ones.
+
+All primitives are instances of `Qmotif`. A primitive is a directed graph with nodes representing qubits and edges unitaries applied between them. The edges are determined by its rules and the number of available qubits. 
+
+Primitives are stacked with addition or multiplication operations which act as append and extend, for example: `Qcycle() + Qpermute() = (Qcycle, Qpermute)` which is a `Qmotifs` object, a sequence of `Qmotif`. Simlarly `Qcycle()*3 = (Qcycle(), Qcycle(), Qcycle())` is again an instance of `Qmotifs`. 
+
+It’s possible to add motifs together without specifying qubits. When the motif is ready it’s possible to initialize it with `Qinit` in the following way: `Qinit(8) + motif`. This creates a `Qhierarchy` object, which traverses all the motifs generating their edges.
+
+The types of primitves are:
+
+  - `Qcycle`: creates a cycle of unitaries, also called *ladders* or *convolutions*. Its hyperparameters are used to generate cycles in directed graphs.
+
+  - `Qpermute`: permutes unitaries across qubits.
+
+  - `Qmask`: masks certain qubits based on a pattern, also referred to as *entanglers* or *pooling* layers. A mapping can be provided to save its information.
+
+  - `Qunmask`: unmasks previously masked unitaries.
+
+  - `Qinit`: specifies the qubit names, order and amount.
+
+Each primitive has a mapping hyperparameter that expects a `Qunitary` object. `Qunitary` has the following parameters (which are the information that tells to a primitive):
+
+- `function`: function that gets executed at every edge
+- `n_symbols`: number of symbols the function expects
+- `arity`: the number of qubits the function acts upon
+
+
+#TODO add some plots
+
+### Reverse binary trees{#sec-reverse-binary-trees}
+
+The idea behind *reverse binary tree architectures* is to reduce the system size in half until one qubit remains while alternating between convolution and pooling operations. Grant et al. \[5\] exhibited the success of hierarchical designs that resemble reverse binary trees. To create a space of these architectures, like the one on the right in @fig-reverse-binary-tree, only three levels of motifs are needed. 
+
+![Reverse binary tree in HierarQcal](../img/hierarchical_motifs.png){#fig-reverse-binary-tree}
+
+
+`Qcycle(1)` and `Qmask("right")` are both primitives. Alternating between them (`m = Qcycle(1) + Qmask("right")`) is a level two motif, then repeating that 3 times (`m*3`) is a level 3 motif. This gives a concise description of the circuit on the right.
+

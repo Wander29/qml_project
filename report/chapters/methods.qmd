@@ -36,7 +36,7 @@ pipeline = Pipeline(
 )
 ```
 
-Each row of the data resulting from the preprocessing has 8 features and so it can be encoded through an angle embedding into a quantum circuit with 8 qubit. The quantum circuit used here is a QCNN with a hierarchical design: the idea is to reduce the system size in half until one qubit remains while alternating between convolution and pooling operations. Grant et al. @grant2018hierarchical exhibited the success of hierarchical designs that resemble reverse binary trees. To create a space of these architectures only three levels of motifs are needed.
+Each row of the data resulting from the preprocessing has 8 features and so it can be encoded through an angle embedding into a quantum circuit with 8 qubit. The quantum circuit used here is a QCNN with a hierarchical design that resemble reverse binary trees (see @sec-reverse-binary-trees).
 
 ![Main workflow of model implementation. $U$s are convolutional unitaries and $V$s a re pooling unitaries. From @lourens2023hierarchical](../img/workflow.png)
 
@@ -122,7 +122,7 @@ def qcnn_motif(ansatz_c, conv_stride, conv_step, conv_offset, share_weights, ans
     return qcnn
 ```
 
-The motif obtained from `qcnn_motif` is not ready to be executed. It needs to be translated to a pennylane circuit and also the input $x \in \mathcal{R}^8$ must be embedded into this circuit.
+The motif obtained from `qcnn_motif` is not ready to be executed. It needs to be translated into a pennylane circuit and also the input $x \in \mathcal{R}^8$ must be embedded into this circuit.
 
 ```{python}
 #| label: fig-code_circuit

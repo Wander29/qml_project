@@ -43,7 +43,7 @@ grid_params = {
                 # 'model__stride_p':[2],
                 
                 # 'model__ansatz_c':["a", "b", "g"],
-                'model__ansatz_c':["b"],
+                'model__ansatz_c':["b", "g"],
                 'model__ansatz_p':["1", "2"],
               }
 
